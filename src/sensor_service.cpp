@@ -35,6 +35,16 @@
   ******************************************************************************
   */
 #include "sensor_service.h"
+#include "bluenrg_hal_aci.h"
+#include "hci.h"
+#include "hci_le.h"
+#include "bluenrg_utils.h"
+#include "stm32_bluenrg_ble.h"
+#include "osal.h"
+#include "bluenrg_gap_aci.h"
+#include "bluenrg_gatt_aci.h"
+#include "gp_timer.h"
+#include "Arduino.h"
 
 /** @addtogroup X-CUBE-BLE1_Applications
  *  @{
@@ -51,23 +61,10 @@
 /** @defgroup SENSOR_SERVICE_Private_Variables
  * @{
  */
-/* Private variables ---------------------------------------------------------*/
-volatile int connected = FALSE;
-volatile uint8_t set_connectable = 1;
-volatile uint16_t connection_handle = 0;
-volatile uint8_t notification_enabled = FALSE;
-volatile AxesRaw_t axes_data = {0, 0, 0};
-uint16_t sampleServHandle, TXCharHandle, RXCharHandle;
-uint16_t accServHandle, freeFallCharHandle, accCharHandle;
-uint16_t envSensServHandle, tempCharHandle, pressCharHandle, humidityCharHandle;
+/* Public variables ----------------------------------------------------------*/
+extern uint8_t bnrg_expansion_board;
+SensorServiceClass SensorService;
 
-#if NEW_SERVICES
-  uint16_t timeServHandle, secondsCharHandle, minuteCharHandle;
-  uint16_t ledServHandle, ledButtonCharHandle;
-  uint8_t ledState = 0;
-  int previousMinuteValue = -1;
-  extern uint8_t bnrg_expansion_board;
-#endif
 /**
  * @}
  */
@@ -84,39 +81,36 @@ do {\
                 uuid_struct[12] = uuid_12; uuid_struct[13] = uuid_13; uuid_struct[14] = uuid_14; uuid_struct[15] = uuid_15; \
 }while(0)
 
-#if NEW_SERVICES
-  #define COPY_ACC_SERVICE_UUID(uuid_struct)  COPY_UUID_128(uuid_struct,0x02,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_FREE_FALL_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0xe2,0x3e,0x78,0xa0, 0xcf,0x4a, 0x11,0xe1, 0x8f,0xfc, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_ACC_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x34,0x0a,0x1b,0x80, 0xcf,0x4b, 0x11,0xe1, 0xac,0x36, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+#define COPY_ACC_SERVICE_UUID(uuid_struct)  COPY_UUID_128(uuid_struct,0x02,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+#define COPY_FREE_FALL_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0xe2,0x3e,0x78,0xa0, 0xcf,0x4a, 0x11,0xe1, 0x8f,0xfc, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+#define COPY_ACC_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x34,0x0a,0x1b,0x80, 0xcf,0x4b, 0x11,0xe1, 0xac,0x36, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
 
-  #define COPY_ENV_SENS_SERVICE_UUID(uuid_struct)  COPY_UUID_128(uuid_struct,0x42,0x82,0x1a,0x40, 0xe4,0x77, 0x11,0xe2, 0x82,0xd0, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_TEMP_CHAR_UUID(uuid_struct)         COPY_UUID_128(uuid_struct,0xa3,0x2e,0x55,0x20, 0xe4,0x77, 0x11,0xe2, 0xa9,0xe3, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_PRESS_CHAR_UUID(uuid_struct)        COPY_UUID_128(uuid_struct,0xcd,0x20,0xc4,0x80, 0xe4,0x8b, 0x11,0xe2, 0x84,0x0b, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_HUMIDITY_CHAR_UUID(uuid_struct)     COPY_UUID_128(uuid_struct,0x01,0xc5,0x0b,0x60, 0xe4,0x8c, 0x11,0xe2, 0xa0,0x73, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+#define COPY_ENV_SENS_SERVICE_UUID(uuid_struct)  COPY_UUID_128(uuid_struct,0x42,0x82,0x1a,0x40, 0xe4,0x77, 0x11,0xe2, 0x82,0xd0, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+#define COPY_TEMP_CHAR_UUID(uuid_struct)         COPY_UUID_128(uuid_struct,0xa3,0x2e,0x55,0x20, 0xe4,0x77, 0x11,0xe2, 0xa9,0xe3, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+#define COPY_PRESS_CHAR_UUID(uuid_struct)        COPY_UUID_128(uuid_struct,0xcd,0x20,0xc4,0x80, 0xe4,0x8b, 0x11,0xe2, 0x84,0x0b, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+#define COPY_HUMIDITY_CHAR_UUID(uuid_struct)     COPY_UUID_128(uuid_struct,0x01,0xc5,0x0b,0x60, 0xe4,0x8c, 0x11,0xe2, 0xa0,0x73, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
 
-  // Time service: uuid = 0x08, 0x36, 0x6e, 0x80, 0xcf, 0x3a, 0x11, 0xe1, 0x9a, 0xb4, 0x00, 0x02, 0xa5, 0xd5, 0xc5, 0x1b
-  //      straight uuid = 0x08366e80cf3a11e19ab40002a5d5c51b
-  #define COPY_TIME_SERVICE_UUID(uuid_struct)  COPY_UUID_128(uuid_struct,0x08,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_TIME_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x09,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_MINUTE_UUID(uuid_struct)        COPY_UUID_128(uuid_struct,0x0a,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+// Time service: uuid = 0x08, 0x36, 0x6e, 0x80, 0xcf, 0x3a, 0x11, 0xe1, 0x9a, 0xb4, 0x00, 0x02, 0xa5, 0xd5, 0xc5, 0x1b
+//      straight uuid = 0x08366e80cf3a11e19ab40002a5d5c51b
+#define COPY_TIME_SERVICE_UUID(uuid_struct)  COPY_UUID_128(uuid_struct,0x08,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+#define COPY_TIME_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x09,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+#define COPY_MINUTE_UUID(uuid_struct)        COPY_UUID_128(uuid_struct,0x0a,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
 
-  // LED service
-  #define COPY_LED_SERVICE_UUID(uuid_struct)  COPY_UUID_128(uuid_struct,0x0b,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_LED_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x0c,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-#else
-  #define COPY_ACC_SERVICE_UUID(uuid_struct)  COPY_UUID_128(uuid_struct,0x02,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_FREE_FALL_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0xe2,0x3e,0x78,0xa0, 0xcf,0x4a, 0x11,0xe1, 0x8f,0xfc, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_ACC_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x34,0x0a,0x1b,0x80, 0xcf,0x4b, 0x11,0xe1, 0xac,0x36, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+// LED service
+#define COPY_LED_SERVICE_UUID(uuid_struct)  COPY_UUID_128(uuid_struct,0x0b,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
+#define COPY_LED_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x0c,0x36,0x6e,0x80, 0xcf,0x3a, 0x11,0xe1, 0x9a,0xb4, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
 
-  #define COPY_ENV_SENS_SERVICE_UUID(uuid_struct)  COPY_UUID_128(uuid_struct,0x42,0x82,0x1a,0x40, 0xe4,0x77, 0x11,0xe2, 0x82,0xd0, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_TEMP_CHAR_UUID(uuid_struct)         COPY_UUID_128(uuid_struct,0xa3,0x2e,0x55,0x20, 0xe4,0x77, 0x11,0xe2, 0xa9,0xe3, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_PRESS_CHAR_UUID(uuid_struct)        COPY_UUID_128(uuid_struct,0xcd,0x20,0xc4,0x80, 0xe4,0x8b, 0x11,0xe2, 0x84,0x0b, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-  #define COPY_HUMIDITY_CHAR_UUID(uuid_struct)     COPY_UUID_128(uuid_struct,0x01,0xc5,0x0b,0x60, 0xe4,0x8c, 0x11,0xe2, 0xa0,0x73, 0x00,0x02,0xa5,0xd5,0xc5,0x1b)
-#endif
 
 /* Store Value into a buffer in Little Endian Format */
 #define STORE_LE_16(buf, val)    ( ((buf)[0] =  (uint8_t) (val)    ) , \
                                    ((buf)[1] =  (uint8_t) (val>>8) ) )
+
+/* Private Prototypes --------------------------------------------------------*/
+void Sensor_HCI_Event_CB(void *pckt);
+
+
+
+
 /**
  * @}
  */
@@ -124,13 +118,117 @@ do {\
 /** @defgroup SENSOR_SERVICE_Exported_Functions
  * @{
  */
+
+tBleStatus SensorServiceClass::begin(const char *name, uint8_t addr[BDADDR_SIZE])
+{
+  uint8_t bdaddr[BDADDR_SIZE];
+  uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
+
+  uint8_t  hwVersion;
+  uint16_t fwVersion;
+
+  int ret;
+
+  if((name == NULL) || (addr == NULL)) {
+    return BLE_STATUS_NULL_PARAM;
+  }
+
+  attach_HCI_CB(Sensor_HCI_Event_CB);
+
+  /* get the BlueNRG HW and FW versions */
+  ret = getBlueNRGVersion(&hwVersion, &fwVersion);
+  if(ret) {
+    PRINTF("Reading Version failed.\n");
+    return ret;
+  }
+
+  /*
+   * Reset BlueNRG again otherwise we won't
+   * be able to change its MAC address.
+   * aci_hal_write_config_data() must be the first
+   * command after reset otherwise it will fail.
+   */
+  BlueNRG_RST();
+
+  if (hwVersion > 0x30) { /* X-NUCLEO-IDB05A1 expansion board is used */
+    bnrg_expansion_board = IDB05A1;
+    /*
+     * Change the MAC address to avoid issues with Android cache:
+     * if different boards have the same MAC address, Android
+     * applications unless you restart Bluetooth on tablet/phone
+     */
+    addr[5] = 0x02;
+  }
+
+  /* The Nucleo board must be configured as SERVER */
+  Osal_MemCpy(bdaddr, addr, BDADDR_SIZE);
+
+  ret = aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET,
+                                  CONFIG_DATA_PUBADDR_LEN,
+                                  bdaddr);
+  if(ret){
+    PRINTF("Setting BD_ADDR failed.\n");
+    return ret;
+  }
+
+  ret = aci_gatt_init();
+  if(ret){
+    PRINTF("GATT_Init failed.\n");
+    return ret;
+  }
+
+  if (bnrg_expansion_board == IDB05A1) {
+    ret = aci_gap_init_IDB05A1(GAP_PERIPHERAL_ROLE_IDB05A1, 0, 0x07, &service_handle, &dev_name_char_handle, &appearance_char_handle);
+  }
+  else {
+    ret = aci_gap_init_IDB04A1(GAP_PERIPHERAL_ROLE_IDB04A1, &service_handle, &dev_name_char_handle, &appearance_char_handle);
+  }
+
+  if(ret){
+    PRINTF("GAP_Init failed.\n");
+    return ret;
+  }
+
+  ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
+                                   strlen(name), (uint8_t *)name);
+
+  if(ret){
+    PRINTF("aci_gatt_update_char_value failed.\n");
+    return ret;
+  }
+
+  ret = aci_gap_set_auth_requirement(MITM_PROTECTION_REQUIRED,
+                                     OOB_AUTH_DATA_ABSENT,
+                                     NULL,
+                                     7,
+                                     16,
+                                     USE_FIXED_PIN_FOR_PAIRING,
+                                     123456,
+                                     BONDING);
+  if (ret) {
+    PRINTF("BLE Stack Initialization failed.\n");
+    return ret;
+  }
+
+  /* Set output power level */
+  ret = aci_hal_set_tx_power_level(1,4);
+
+  if (ret) {
+    PRINTF("Setting Tx Power Level failed.\n");
+  }
+
+  return ret;
+}
+
+
+
 /**
  * @brief  Add an accelerometer service using a vendor specific profile.
  *
  * @param  None
  * @retval tBleStatus Status
  */
-tBleStatus Add_Acc_Service(void)
+tBleStatus SensorServiceClass::Add_Acc_Service(void)
 {
   tBleStatus ret;
 
@@ -170,7 +268,7 @@ fail:
  * @param  None
  * @retval tBleStatus Status
  */
-tBleStatus Free_Fall_Notify(void)
+tBleStatus SensorServiceClass::Free_Fall_Notify(void)
 {
   uint8_t val;
   tBleStatus ret;
@@ -192,10 +290,14 @@ tBleStatus Free_Fall_Notify(void)
  * @param  Structure containing acceleration value in mg
  * @retval Status
  */
-tBleStatus Acc_Update(AxesRaw_t *data)
+tBleStatus SensorServiceClass::Acc_Update(AxesRaw_t *data)
 {
   tBleStatus ret;
   uint8_t buff[6];
+
+  axes_data.AXIS_X = data->AXIS_X;
+  axes_data.AXIS_Y = data->AXIS_Y;
+  axes_data.AXIS_Z = data->AXIS_Z;
 
   STORE_LE_16(buff,data->AXIS_X);
   STORE_LE_16(buff+2,data->AXIS_Y);
@@ -216,7 +318,7 @@ tBleStatus Acc_Update(AxesRaw_t *data)
  * @param  None
  * @retval Status
  */
-tBleStatus Add_Environmental_Sensor_Service(void)
+tBleStatus SensorServiceClass::Add_Environmental_Sensor_Service(void)
 {
   tBleStatus ret;
   uint8_t uuid[16];
@@ -261,69 +363,67 @@ tBleStatus Add_Environmental_Sensor_Service(void)
   if (ret != BLE_STATUS_SUCCESS) goto fail;
 
   /* Pressure Characteristic */
-  if(1){ //FIXME
-    COPY_PRESS_CHAR_UUID(uuid);
-    ret =  aci_gatt_add_char(envSensServHandle, UUID_TYPE_128, uuid, 3,
-                             CHAR_PROP_READ, ATTR_PERMISSION_NONE,
-                             GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
-                             16, 0, &pressCharHandle);
-    if (ret != BLE_STATUS_SUCCESS) goto fail;
+  COPY_PRESS_CHAR_UUID(uuid);
+  ret =  aci_gatt_add_char(envSensServHandle, UUID_TYPE_128, uuid, 3,
+                           CHAR_PROP_READ, ATTR_PERMISSION_NONE,
+                           GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
+                           16, 0, &pressCharHandle);
+  if (ret != BLE_STATUS_SUCCESS) goto fail;
 
-    charFormat.format = FORMAT_SINT24;
-    charFormat.exp = -5;
-    charFormat.unit = UNIT_PRESSURE_BAR;
-    charFormat.name_space = 0;
-    charFormat.desc = 0;
+  charFormat.format = FORMAT_UINT32;
+  charFormat.exp = -1;
+  charFormat.unit = UNIT_PRESSURE_PASCAL;
+  charFormat.name_space = 0;
+  charFormat.desc = 0;
 
-    uuid16 = CHAR_FORMAT_DESC_UUID;
+  uuid16 = CHAR_FORMAT_DESC_UUID;
 
-    ret = aci_gatt_add_char_desc(envSensServHandle,
-                                 pressCharHandle,
-                                 UUID_TYPE_16,
-                                 (uint8_t *)&uuid16,
-                                 7,
-                                 7,
-                                 (void *)&charFormat,
-                                 ATTR_PERMISSION_NONE,
-                                 ATTR_ACCESS_READ_ONLY,
-                                 0,
-                                 16,
-                                 FALSE,
-                                 &descHandle);
-    if (ret != BLE_STATUS_SUCCESS) goto fail;
-  }
+  ret = aci_gatt_add_char_desc(envSensServHandle,
+                               pressCharHandle,
+                               UUID_TYPE_16,
+                               (uint8_t *)&uuid16,
+                               7,
+                               7,
+                               (void *)&charFormat,
+                               ATTR_PERMISSION_NONE,
+                               ATTR_ACCESS_READ_ONLY,
+                               0,
+                               16,
+                               FALSE,
+                               &descHandle);
+  if (ret != BLE_STATUS_SUCCESS) goto fail;
+
   /* Humidity Characteristic */
-  if(1){   //FIXME
-    COPY_HUMIDITY_CHAR_UUID(uuid);
-    ret =  aci_gatt_add_char(envSensServHandle, UUID_TYPE_128, uuid, 2,
-                             CHAR_PROP_READ, ATTR_PERMISSION_NONE,
-                             GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
-                             16, 0, &humidityCharHandle);
-    if (ret != BLE_STATUS_SUCCESS) goto fail;
+  COPY_HUMIDITY_CHAR_UUID(uuid);
+  ret =  aci_gatt_add_char(envSensServHandle, UUID_TYPE_128, uuid, 2,
+                           CHAR_PROP_READ, ATTR_PERMISSION_NONE,
+                           GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
+                           16, 0, &humidityCharHandle);
+  if (ret != BLE_STATUS_SUCCESS) goto fail;
 
-    charFormat.format = FORMAT_UINT16;
-    charFormat.exp = -1;
-    charFormat.unit = UNIT_UNITLESS;
-    charFormat.name_space = 0;
-    charFormat.desc = 0;
+  charFormat.format = FORMAT_UINT16;
+  charFormat.exp = -1;
+  charFormat.unit = UNIT_PERCENTAGE;
+  charFormat.name_space = 0;
+  charFormat.desc = 0;
 
-    uuid16 = CHAR_FORMAT_DESC_UUID;
+  uuid16 = CHAR_FORMAT_DESC_UUID;
 
-    ret = aci_gatt_add_char_desc(envSensServHandle,
-                                 humidityCharHandle,
-                                 UUID_TYPE_16,
-                                 (uint8_t *)&uuid16,
-                                 7,
-                                 7,
-                                 (void *)&charFormat,
-                                 ATTR_PERMISSION_NONE,
-                                 ATTR_ACCESS_READ_ONLY,
-                                 0,
-                                 16,
-                                 FALSE,
-                                 &descHandle);
-    if (ret != BLE_STATUS_SUCCESS) goto fail;
-  }
+  ret = aci_gatt_add_char_desc(envSensServHandle,
+                               humidityCharHandle,
+                               UUID_TYPE_16,
+                               (uint8_t *)&uuid16,
+                               7,
+                               7,
+                               (void *)&charFormat,
+                               ATTR_PERMISSION_NONE,
+                               ATTR_ACCESS_READ_ONLY,
+                               0,
+                               16,
+                               FALSE,
+                               &descHandle);
+  if (ret != BLE_STATUS_SUCCESS) goto fail;
+
   PRINTF("Service ENV_SENS added. Handle 0x%04X, TEMP Charac handle: 0x%04X, PRESS Charac handle: 0x%04X, HUMID Charac handle: 0x%04X\n",envSensServHandle, tempCharHandle, pressCharHandle, humidityCharHandle);
   return BLE_STATUS_SUCCESS;
 
@@ -335,12 +435,14 @@ fail:
 
 /**
  * @brief  Update temperature characteristic value.
- * @param  Temperature in tenths of degree
+ * @param  Temperature in hundredths of degree celsius
  * @retval Status
  */
-tBleStatus Temp_Update(int16_t temp)
+tBleStatus SensorServiceClass::Temp_Update(int16_t temp)
 {
   tBleStatus ret;
+
+  temp_data = temp;
 
   ret = aci_gatt_update_char_value(envSensServHandle, tempCharHandle, 0, 2,
                                    (uint8_t*)&temp);
@@ -355,12 +457,14 @@ tBleStatus Temp_Update(int16_t temp)
 
 /**
  * @brief  Update pressure characteristic value.
- * @param  int32_t Pressure in mbar
+ * @param  int32_t Pressure in tenths of Pascal
  * @retval tBleStatus Status
  */
-tBleStatus Press_Update(int32_t press)
+tBleStatus SensorServiceClass::Press_Update(uint32_t press)
 {
   tBleStatus ret;
+
+  press_data = press;
 
   ret = aci_gatt_update_char_value(envSensServHandle, pressCharHandle, 0, 3,
                                    (uint8_t*)&press);
@@ -375,12 +479,14 @@ tBleStatus Press_Update(int32_t press)
 
 /**
  * @brief  Update humidity characteristic value.
- * @param  uint16_thumidity RH (Relative Humidity) in thenths of %
+ * @param  uint16_thumidity RH (Relative Humidity) in hundredths of %
  * @retval tBleStatus      Status
  */
-tBleStatus Humidity_Update(uint16_t humidity)
+tBleStatus SensorServiceClass::Humidity_Update(uint16_t humidity)
 {
   tBleStatus ret;
+
+  hum_data = humidity;
 
   ret = aci_gatt_update_char_value(envSensServHandle, humidityCharHandle, 0, 2,
                                    (uint8_t*)&humidity);
@@ -413,21 +519,29 @@ tBleStatus Humidity_Update(uint16_t humidity)
  *  ret = aci_gap_update_adv_data(5, manuf_data);
  *
  */
-void setConnectable(void)
+void SensorServiceClass::setConnectable(void)
 {
   tBleStatus ret;
 
   const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
 
-  /* disable scan response */
-  hci_le_set_scan_resp_data(0,NULL);
-  PRINTF("General Discoverable Mode.\n");
+  if(set_connectable){
+    /* disable scan response */
+    hci_le_set_scan_resp_data(0,NULL);
+    PRINTF("General Discoverable Mode.\n");
 
-  ret = aci_gap_set_discoverable(ADV_IND, 0, 0, PUBLIC_ADDR, NO_WHITE_LIST_USE,
-                                 sizeof(local_name), local_name, 0, NULL, 0, 0);
-  if (ret != BLE_STATUS_SUCCESS) {
-    PRINTF("Error while setting discoverable mode (%d)\n", ret);
+    ret = aci_gap_set_discoverable(ADV_IND, 0, 0, PUBLIC_ADDR, NO_WHITE_LIST_USE,
+                                   sizeof(local_name), local_name, 0, NULL, 0, 0);
+    if (ret != BLE_STATUS_SUCCESS) {
+      PRINTF("Error while setting discoverable mode (%d)\n", ret);
+    }
+    set_connectable = FALSE;
   }
+}
+
+int SensorServiceClass::isConnected(void)
+{
+  return connected;
 }
 
 /**
@@ -436,16 +550,21 @@ void setConnectable(void)
  * @param  uint16_t Connection handle
  * @retval None
  */
-void GAP_ConnectionComplete_CB(uint8_t addr[6], uint16_t handle)
+void SensorServiceClass::GAP_ConnectionComplete_CB(uint8_t addr[BDADDR_SIZE], uint16_t handle)
 {
   connected = TRUE;
   connection_handle = handle;
 
+#ifdef DEBUG
   PRINTF("Connected to device:");
   for(int i = 5; i > 0; i--){
     PRINTF("%02X-", addr[i]);
   }
   PRINTF("%02X\n", addr[0]);
+#else
+  UNUSED(addr);
+#endif
+
 }
 
 /**
@@ -453,7 +572,7 @@ void GAP_ConnectionComplete_CB(uint8_t addr[6], uint16_t handle)
  * @param  None
  * @retval None
  */
-void GAP_DisconnectionComplete_CB(void)
+void SensorServiceClass::GAP_DisconnectionComplete_CB(void)
 {
   connected = FALSE;
   PRINTF("Disconnected\n");
@@ -467,33 +586,23 @@ void GAP_DisconnectionComplete_CB(void)
  * @param  uint16_t Handle of the attribute
  * @retval None
  */
-void Read_Request_CB(uint16_t handle)
+void SensorServiceClass::Read_Request_CB(uint16_t handle)
 {
   if(handle == accCharHandle + 1){
     Acc_Update((AxesRaw_t*)&axes_data);
   }
   else if(handle == tempCharHandle + 1){
-    int16_t data;
-    data = 270 + ((uint64_t)rand()*15)/RAND_MAX; //sensor emulation
     Acc_Update((AxesRaw_t*)&axes_data); //FIXME: to overcome issue on Android App
                                         // If the user button is not pressed within
                                         // a short time after the connection,
                                         // a pop-up reports a "No valid characteristics found" error.
-    Temp_Update(data);
+    Temp_Update(temp_data);
   }
   else if(handle == pressCharHandle + 1){
-    int32_t data;
-    struct timer t;
-    Timer_Set(&t, CLOCK_SECOND/10);
-    data = 100000 + ((uint64_t)rand()*1000)/RAND_MAX;
-    Press_Update(data);
+    Press_Update(press_data);
   }
   else if(handle == humidityCharHandle + 1){
-    uint16_t data;
-
-    data = 450 + ((uint64_t)rand()*100)/RAND_MAX;
-
-    Humidity_Update(data);
+    Humidity_Update(hum_data);
   }
 
   //EXIT:
@@ -508,9 +617,9 @@ void Read_Request_CB(uint16_t handle)
  * @param  void* Pointer to the ACI packet
  * @retval None
  */
-void HCI_Event_CB(void *pckt)
+void Sensor_HCI_Event_CB(void *pckt)
 {
-  hci_uart_pckt *hci_pckt = pckt;
+  hci_uart_pckt *hci_pckt = (hci_uart_pckt *)pckt;
   /* obtain event packet */
   hci_event_pckt *event_pckt = (hci_event_pckt*)hci_pckt->data;
 
@@ -521,19 +630,19 @@ void HCI_Event_CB(void *pckt)
 
   case EVT_DISCONN_COMPLETE:
     {
-      GAP_DisconnectionComplete_CB();
+      SensorService.GAP_DisconnectionComplete_CB();
     }
     break;
 
   case EVT_LE_META_EVENT:
     {
-      evt_le_meta_event *evt = (void *)event_pckt->data;
+      evt_le_meta_event *evt = (evt_le_meta_event *)event_pckt->data;
 
       switch(evt->subevent){
       case EVT_LE_CONN_COMPLETE:
         {
-          evt_le_connection_complete *cc = (void *)evt->data;
-          GAP_ConnectionComplete_CB(cc->peer_bdaddr, cc->handle);
+          evt_le_connection_complete *cc = (evt_le_connection_complete *)evt->data;
+          SensorService.GAP_ConnectionComplete_CB(cc->peer_bdaddr, cc->handle);
         }
         break;
       }
@@ -542,30 +651,28 @@ void HCI_Event_CB(void *pckt)
 
   case EVT_VENDOR:
     {
-      evt_blue_aci *blue_evt = (void*)event_pckt->data;
+      evt_blue_aci *blue_evt = (evt_blue_aci *)event_pckt->data;
       switch(blue_evt->ecode){
 
-#if NEW_SERVICES
       case EVT_BLUE_GATT_ATTRIBUTE_MODIFIED:
         {
           /* this callback is invoked when a GATT attribute is modified
           extract callback data and pass to suitable handler function */
           if (bnrg_expansion_board == IDB05A1) {
             evt_gatt_attr_modified_IDB05A1 *evt = (evt_gatt_attr_modified_IDB05A1*)blue_evt->data;
-            Attribute_Modified_CB(evt->attr_handle, evt->data_length, evt->att_data);
+            SensorService.Attribute_Modified_CB(evt->attr_handle, evt->data_length, evt->att_data);
           }
           else {
             evt_gatt_attr_modified_IDB04A1 *evt = (evt_gatt_attr_modified_IDB04A1*)blue_evt->data;
-            Attribute_Modified_CB(evt->attr_handle, evt->data_length, evt->att_data);
+            SensorService.Attribute_Modified_CB(evt->attr_handle, evt->data_length, evt->att_data);
           }
         }
         break;
-#endif
 
       case EVT_BLUE_GATT_READ_PERMIT_REQ:
         {
-          evt_gatt_read_permit_req *pr = (void*)blue_evt->data;
-          Read_Request_CB(pr->attr_handle);
+          evt_gatt_read_permit_req *pr = (evt_gatt_read_permit_req *)blue_evt->data;
+          SensorService.Read_Request_CB(pr->attr_handle);
         }
         break;
       }
@@ -574,13 +681,12 @@ void HCI_Event_CB(void *pckt)
   }
 }
 
-#if NEW_SERVICES
 /**
  * @brief  Add a time service using a vendor specific profile
  * @param  None
  * @retval Status
  */
-tBleStatus Add_Time_Service(void)
+tBleStatus SensorServiceClass::Add_Time_Service(void)
 {
   tBleStatus ret;
   uint8_t uuid[16];
@@ -637,17 +743,17 @@ fail:
  * @param  None
  * @retval Status
  */
-tBleStatus Seconds_Update(void)
+tBleStatus SensorServiceClass::Seconds_Update(void)
 {
   uint32_t val;
   tBleStatus ret;
 
   /* Obtain system tick value in milliseconds, and convert it to seconds. */
-  val = HAL_GetTick();
+  val = millis();
   val = val/1000;
 
   /* create a time[] array to pass as last argument of aci_gatt_update_char_value() API*/
-  const uint8_t time[4] = {(val >> 24)&0xFF, (val >> 16)&0xFF, (val >> 8)&0xFF, (val)&0xFF};
+  const uint8_t time[4] = {(uint8_t)((val >> 24)&0xFF), (uint8_t)((val >> 16)&0xFF), (uint8_t)((val >> 8)&0xFF), (uint8_t)((val)&0xFF)};
 
   /*
    * Update value of "Seconds characteristic" using aci_gatt_update_char_value() API
@@ -669,14 +775,14 @@ tBleStatus Seconds_Update(void)
  * @param  None
  * @retval Status
  */
-tBleStatus Minutes_Notify(void)
+tBleStatus SensorServiceClass::Minutes_Notify(void)
 {
   uint32_t val;
   uint32_t minuteValue;
   tBleStatus ret;
 
   /* Obtain system tick value in milliseconds */
-  val = HAL_GetTick();
+  val = millis();
 
   /* update "Minutes characteristic" value iff it has changed w.r.t. previous
    * "minute" value.
@@ -686,7 +792,7 @@ tBleStatus Minutes_Notify(void)
     previousMinuteValue = minuteValue;
 
     /* create a time[] array to pass as last argument of aci_gatt_update_char_value() API*/
-    const uint8_t time[4] = {(minuteValue >> 24)&0xFF, (minuteValue >> 16)&0xFF, (minuteValue >> 8)&0xFF, (minuteValue)&0xFF};
+    const uint8_t time[4] = {(uint8_t)((minuteValue >> 24)&0xFF), (uint8_t)((minuteValue >> 16)&0xFF), (uint8_t)((minuteValue >> 8)&0xFF), (uint8_t)((minuteValue)&0xFF)};
 
   /*
    * Update value of "Minutes characteristic" using aci_gatt_update_char_value() API
@@ -708,7 +814,7 @@ tBleStatus Minutes_Notify(void)
  * @param  None
  * @retval None
  */
-void Update_Time_Characteristics(void) {
+void SensorServiceClass::Update_Time_Characteristics(void) {
   /* update "seconds and minutes characteristics" of time service */
   Seconds_Update();
   Minutes_Notify();
@@ -719,7 +825,7 @@ void Update_Time_Characteristics(void) {
  * @param  None
  * @retval Status
  */
-tBleStatus Add_LED_Service(void)
+tBleStatus SensorServiceClass::Add_LED_Service(void)
 {
   tBleStatus ret;
   uint8_t uuid[16];
@@ -766,14 +872,16 @@ fail:
  * @param  Pointer to the modified attribute data
  * @retval None
  */
-void Attribute_Modified_CB(uint16_t handle, uint8_t data_length, uint8_t *att_data)
+void SensorServiceClass::Attribute_Modified_CB(uint16_t handle, uint8_t data_length, uint8_t *att_data)
 {
+  UNUSED(data_length);
+  UNUSED(att_data);
+
   /* If GATT client has modified 'LED button characteristic' value, toggle LED2 */
   if(handle == ledButtonCharHandle + 1){
-      BSP_LED_Toggle(LED2);
+      ledState = !ledState;
   }
 }
-#endif /* NEW_SERVICES */
 /**
  * @}
  */
