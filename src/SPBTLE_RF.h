@@ -31,4 +31,36 @@
 #ifndef __SPBTLE_RF_H
 #define __SPBTLE_RF_H
 
+#include "Arduino.h"
+#include <SPI.h>
+
+#define IDB04A1 0
+#define IDB05A1 1
+
+#define BDADDR_SIZE 6
+
+typedef enum {
+  SPBTLERF_OK = 0,
+  SPBTLERF_ERROR
+} SPBTLERF_state_t;
+
+typedef enum {
+  DISABLE_LOW_POWER_MODE = 0,
+  ENABLE_LOW_POWER_MODE
+} lowPowerMode_t;
+
+void attach_HCI_CB(void (*callback)(void *pckt));
+
+class SPBTLERFClass
+{
+  public:
+    SPBTLERFClass();
+    SPBTLERFClass(SPIClass *SPIx, uint8_t csPin, uint8_t spiIRQ, uint8_t reset, uint8_t led = 0xFF);
+
+    SPBTLERF_state_t begin(void);
+    void end(void);
+
+    void update(void);
+};
+
 #endif //__SPBTLE_RF_H
