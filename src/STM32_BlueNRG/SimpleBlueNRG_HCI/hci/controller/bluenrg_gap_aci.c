@@ -124,7 +124,7 @@ tBleStatus aci_gap_set_limited_discoverable(uint8_t AdvType, uint16_t AdvIntervM
   uint8_t buffer[40];
   uint8_t indx = 0;
 
-  if ((LocalNameLen+ServiceUUIDLen+14) > sizeof(buffer))
+  if ((LocalNameLen+ServiceUUIDLen+14) > (uint8_t)sizeof(buffer))
     return BLE_STATUS_INVALID_PARAMS;
 
   buffer[indx] = AdvType;
@@ -187,7 +187,7 @@ tBleStatus aci_gap_set_discoverable(uint8_t AdvType, uint16_t AdvIntervMin, uint
   uint8_t buffer[40];
   uint8_t indx = 0;
 
-  if ((LocalNameLen+ServiceUUIDLen+14) > sizeof(buffer))
+  if ((LocalNameLen+ServiceUUIDLen+14) > (uint8_t)sizeof(buffer))
     return BLE_STATUS_INVALID_PARAMS;
 
   buffer[indx] = AdvType;
@@ -1176,7 +1176,7 @@ tBleStatus aci_gap_resolve_private_address_IDB05A1(const tBDAddr private_address
   if(rp.status)
     return rp.status;
 
-  Osal_MemCpy(actual_address, rp.address, sizeof(actual_address));
+  Osal_MemCpy(actual_address, rp.address, 6);
 
   return 0;
 }

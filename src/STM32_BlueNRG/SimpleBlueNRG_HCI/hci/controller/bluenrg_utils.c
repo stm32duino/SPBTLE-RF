@@ -130,11 +130,11 @@ int program_device(const uint8_t *fw_image, uint32_t fw_size)
   /***********************************************************************
   * Erase and Program sectors
   ************************************************************************/
-  for(int i = fw_offset; i < fw_size; i += SECTOR_SIZE) {
+  for(uint32_t i = fw_offset; i < fw_size; i += SECTOR_SIZE) {
     num_erase_retries = 0;
     while (num_erase_retries++ < MAX_ERASE_RETRIES) {
       aci_updater_erase_sector(BASE_ADDRESS + i);
-      for (int j=i; ((j<i+SECTOR_SIZE)&&(j<fw_size)); j += write_block_size) {
+      for (uint32_t j=i; ((j<i+SECTOR_SIZE)&&(j<fw_size)); j += write_block_size) {
 
         write_block_size = MIN(fw_size-j, MAX_WRITE_BLOCK_SIZE);
 
@@ -152,7 +152,7 @@ int program_device(const uint8_t *fw_image, uint32_t fw_size)
   /***********************************************************************
   * Verify firmware
   ************************************************************************/
-  for(int i = fw_offset; i < fw_size; i += SECTOR_SIZE){
+  for(uint32_t i = fw_offset; i < fw_size; i += SECTOR_SIZE){
     address = BASE_ADDRESS + i;
     if(aci_updater_calc_crc(address, 1, &crc))
       return BLE_UTIL_ACI_ERROR;

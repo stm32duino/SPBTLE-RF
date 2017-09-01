@@ -1131,7 +1131,7 @@ tBleStatus aci_gap_is_device_bonded(uint8_t peer_address_type, const tBDAddr pee
  *  so that the upper layer can decide to disconnect the link. See @ref _evt_gap_pairing_cmplt.
  */
 #define EVT_BLUE_GAP_PAIRING_CMPLT                (0x0401)
-typedef __packed struct _evt_gap_pairing_cmplt{
+typedef struct PACKED _evt_gap_pairing_cmplt{
   uint16_t conn_handle; /**< Connection handle on which the pairing procedure completed */
   /**
    * 0x00: Pairing Success. Pairing with a remote device was successful\n
@@ -1139,7 +1139,7 @@ typedef __packed struct _evt_gap_pairing_cmplt{
    * 0x02: Pairing Failed. The pairing failed with the remote device.
    */
   uint8_t  status;
-} PACKED evt_gap_pairing_cmplt;
+} evt_gap_pairing_cmplt;
 
 
 /**
@@ -1148,9 +1148,9 @@ typedef __packed struct _evt_gap_pairing_cmplt{
  * See @ref _evt_gap_pass_key_req.
  */
 #define EVT_BLUE_GAP_PASS_KEY_REQUEST             (0x0402)
-typedef __packed struct _evt_gap_pass_key_req{
+typedef struct PACKED _evt_gap_pass_key_req{
   uint16_t conn_handle; /**< Connection handle for which the passkey has been requested. */
-} PACKED evt_gap_pass_key_req;
+} evt_gap_pass_key_req;
 
 
 /**
@@ -1161,9 +1161,9 @@ typedef __packed struct _evt_gap_pass_key_req{
  * See @ref _evt_gap_author_req.
  */
 #define EVT_BLUE_GAP_AUTHORIZATION_REQUEST        (0x0403)
-typedef __packed struct _evt_gap_author_req{
+typedef struct PACKED _evt_gap_author_req{
   uint16_t conn_handle; /**< Connection handle for which authorization has been requested. */
-} PACKED evt_gap_author_req;
+} evt_gap_author_req;
 
 /**
  * This event is generated when the slave security request is successfully sent to the master.
@@ -1187,20 +1187,20 @@ typedef __packed struct _evt_gap_author_req{
  * as a consequence of one of the GAP procedures started by the upper layers. See @ref _evt_gap_device_found.
  */
 #define EVT_BLUE_GAP_DEVICE_FOUND                 (0x0406)
-typedef __packed struct _evt_gap_device_found{
+typedef struct PACKED _evt_gap_device_found{
   	uint8_t		evt_type;     /**< Type of event (@ref ADV_IND, @ref ADV_DIRECT_IND, @ref ADV_SCAN_IND, @ref ADV_NONCONN_IND, @ref SCAN_RSP) */
 	uint8_t		bdaddr_type;  /**< Type of the peer address (@ref PUBLIC_ADDR, @ref RANDOM_ADDR). */
 	tBDAddr	    bdaddr;       /**< Address of the peer device found during scanning. */
 	uint8_t		data_length;  /**< Length of advertising or scan response data. */
 	uint8_t		data_RSSI[VARIABLE_SIZE]; /**< Advertising or scan response data + RSSI. RSSI is last octect (signed integer). */
-} PACKED evt_gap_device_found;
+} evt_gap_device_found;
 
 /**
  * This event is sent by the GAP to the upper layers when a procedure previously started has been terminated
  * by the upper layer or has completed for any other reason. See @ref _evt_gap_procedure_complete.
  */
 #define EVT_BLUE_GAP_PROCEDURE_COMPLETE           (0x0407)
-typedef __packed struct _evt_gap_procedure_complete{
+typedef struct PACKED _evt_gap_procedure_complete{
   uint8_t procedure_code; /**< Terminated procedure. See @ref gap_procedure_codes "GAP procedure codes". */
   /**
    * @ref BLE_STATUS_SUCCESS, @ref BLE_STATUS_FAILED or @ref ERR_AUTH_FAILURE (procedure failed
@@ -1215,16 +1215,16 @@ typedef __packed struct _evt_gap_procedure_complete{
    * The reconnection address written to the peripheral device if the peripheral is privacy enabled
    */
   uint8_t data[VARIABLE_SIZE];
-} PACKED evt_gap_procedure_complete;
+} evt_gap_procedure_complete;
 
 /**
  * This event is sent only by a privacy enabled Peripheral. The event is sent to the upper layers when the peripheral
  * is not able to resolve the private address of the peer device after connecting to it.
  */
 #define EVT_BLUE_GAP_ADDR_NOT_RESOLVED_IDB05A1          (0x0408)
-typedef __packed struct _evt_gap_addr_not_resolved_IDB05A1{
+typedef struct PACKED _evt_gap_addr_not_resolved_IDB05A1{
   uint16_t conn_handle; /**< Connection handle for which the private address could not be resolved with any of the stored IRK's.  */
-} PACKED evt_gap_addr_not_resolved_IDB05A1;
+} evt_gap_addr_not_resolved_IDB05A1;
 
 /**
  * This event is raised when the reconnection address is generated during the general connection
@@ -1235,9 +1235,9 @@ typedef __packed struct _evt_gap_addr_not_resolved_IDB05A1{
  * and aci_gap_start_auto_conn_establish_proc().
  */
 #define EVT_BLUE_GAP_RECONNECTION_ADDRESS_IDB04A1       (0x0408)
-typedef __packed struct _evt_gap_reconnection_addr_IDB04A1{
+typedef struct PACKED _evt_gap_reconnection_addr_IDB04A1{
   uint8_t reconnection_address[6]; /**< 6 bytes of reconnection address that has been generated */
-} PACKED evt_gap_reconnection_addr_IDB04A1;
+} evt_gap_reconnection_addr_IDB04A1;
 
 /**
  * @}

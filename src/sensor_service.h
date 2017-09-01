@@ -39,10 +39,6 @@
 #ifndef _SENSOR_SERVICE_H_
 #define _SENSOR_SERVICE_H_
 
-#ifdef __cplusplus
- extern "C" {
-#endif
-
 /* Includes ------------------------------------------------------------------*/
 #include "hal_types.h"
 #include "bluenrg_gatt_server.h"
@@ -174,10 +170,6 @@ extern SensorServiceClass SensorService;
 /**
  * @}
  */
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* _SENSOR_SERVICE_H_ */
 

@@ -357,7 +357,7 @@ const IFR_config_TypeDef IFR_config = {
  * with BlueNRG GUI.
  */
 #else
-#warning BLUENRG_CONFIG not valid
+#warning "BLUENRG_CONFIG not valid. IFR can't be used." 
 #endif
 
 #ifdef __cplusplus
