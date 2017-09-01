@@ -50,11 +50,11 @@ extern "C" {
 /** @addtogroup Beacon
  *  @{
  */
- 
+
 /** @addtogroup EDDYSTONE_BEACON
  * @{
  */
-  
+
 /* Includes ------------------------------------------------------------------*/
 #if defined (__CC_ARM)
 	#define ASSERT_CONCAT_(a, b) a##b
@@ -78,7 +78,7 @@ extern "C" {
  */
 /* Exported types ------------------------------------------------------------*/
 
-/** 
+/**
  * @brief Eddystone Beacon UID structure
  */
 typedef struct
@@ -89,7 +89,7 @@ typedef struct
   uint8_t * BeaconID;          /*!< Specifies the unique 6-byte beacon ID within the specified namespace. */
 } EddystoneUID_InitTypeDef;
 
-/** 
+/**
  * @brief Eddystone Beacon URL structure
  */
 typedef struct
@@ -113,15 +113,31 @@ typedef struct
 #define EDDYSTONE_UID_BEACON_TYPE   (0x01u)
 #define EDDYSTONE_URL_BEACON_TYPE   (0x02u)
 
+#define HTTP_WWW          (0x00u)
+#define HTTPS_WWW         (0x01u)
+#define HTTP              (0x02u)
+#define HTTPS             (0x03u)
+
+#define DOT_COM_SLASH     (0x00u)
+#define DOT_ORG_SLASH     (0x01u)
+#define DOT_EDU_SLASH     (0x02u)
+#define DOT_NET_SLASH     (0x03u)
+#define DOT_INFO_SLASH    (0x04u)
+#define DOT_BIZ_SLASH     (0x05u)
+#define DOT_GOV_SLASH     (0x06u)
+#define DOT_COM           (0x07u)
+#define DOT_ORG           (0x08u)
+#define DOT_EDU           (0x09u)
+#define DOT_NET           (0x0Au)
+#define DOT_INFO          (0x0Bu)
+#define DOT_BIZ           (0x0Cu)
+#define DOT_GOV           (0x0Du)
+
 //#define EDDYSTONE_BEACON_TYPE       (EDDYSTONE_URL_BEACON_TYPE) /* defined in configuration options */
 
 #define ADVERTISING_INTERVAL_IN_MS  (1000)
 #define CALIBRATED_TX_POWER_AT_0_M  ((uint8_t) (-22))
-#define NAMESPACE_ID                'w', 'w', 'w', '.', 's', 't', '.', 'c', 'o', 'm'
-#define BEACON_ID                   0, 0, 0, 0, 0, 1
 #define URL_PREFIX                  HTTP
-#define PHYSICAL_WEB_URL            "goo.gl/viVrdi"
-//#define PHYSICAL_WEB_URL            "www.st.com"
 
 #if (0 != (EDDYSTONE_BEACON_TYPE & (EDDYSTONE_BEACON_TYPE - 1)))
   #error "Please select only a single beacon type!"
@@ -143,15 +159,15 @@ typedef struct
  */
 
 /* Exported Macros -----------------------------------------------------------*/
-         
+
 /** @addtogroup EDDYSTONE_BEACON_Exported_Functions
  *  @{
- */         
+ */
 /* Exported functions --------------------------------------------------------*/
 
-void EddystoneUID_Start(void);
+tBleStatus EddystoneUID_Start(uint8_t* beaconID, uint8_t* nameSpace);
 
-void EddystoneURL_Start(void);
+tBleStatus EddystoneURL_Start(uint8_t* webURL);
 
 tBleStatus EddystoneUID_Init(EddystoneUID_InitTypeDef *EddystoneUID_Init);
 
@@ -168,7 +184,7 @@ tBleStatus EddystoneURL_Init(EddystoneURL_InitTypeDef *EddystoneURL_Init);
 /**
  * @}
  */
- 
+
 /**
  * @}
  */
@@ -176,7 +192,7 @@ tBleStatus EddystoneURL_Init(EddystoneURL_InitTypeDef *EddystoneURL_Init);
 /**
  * @}
  */
- 
+
 #ifdef __cplusplus
 }
 #endif

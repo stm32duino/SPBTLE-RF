@@ -41,10 +41,11 @@
   ******************************************************************************
   */
 
-/* Includes ------------------------------------------------------------------*/
-#include "cube_hal.h"
-#include "bluenrg_interface.h"
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
+/* Includes ------------------------------------------------------------------*/
 #include "hal_types.h"
 #include "hci_const.h"
 #include "hci_le.h"
@@ -62,7 +63,7 @@
 /** @addtogroup Beacon
  *  @{
  */
- 
+
 /** @defgroup EDDYSTONE_BEACON
  * @{
  */
@@ -80,42 +81,52 @@
 /* Private macros ------------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 
-/** @defgroup EDDYSTONE_BEACON_Exported_Functions 
+/** @defgroup EDDYSTONE_BEACON_Exported_Functions
  * @{
- */ 
+ */
 /* Exported functions --------------------------------------------------------*/
 
 /**
   * @brief  This function starts the Eddystone UID device
-  * @param  None
+  * @param  beaconID   : Instace name for UID
+  * @param  nameSpace  : Namespace for UID
   * @retval None
   */
-void EddystoneUID_Start(void)
+ tBleStatus EddystoneUID_Start(uint8_t* beaconID, uint8_t* nameSpace)
 {
-  uint8_t NamespaceID[] = { NAMESPACE_ID };
-  uint8_t BeaconID[] = { BEACON_ID };
-
+  
+  
   EddystoneUID_InitTypeDef EddystoneUID_InitStruct =
   {
     .AdvertisingInterval = ADVERTISING_INTERVAL_IN_MS,
     .CalibratedTxPower = CALIBRATED_TX_POWER_AT_0_M,
-    .NamespaceID = NamespaceID,
-    .BeaconID = BeaconID
+    .NamespaceID = nameSpace,
+    .BeaconID = beaconID
   };
 
-  EddystoneUID_Init(&EddystoneUID_InitStruct);
+  return EddystoneUID_Init(&EddystoneUID_InitStruct);
 }
 
 
 /**
   * @brief  This function starts the Eddystone URL device
-  * @param  None
+  * @param  webURL : URL
   * @retval None
   */
-void EddystoneURL_Start(void)
+tBleStatus EddystoneURL_Start(uint8_t* webURL)
 {
   uint8_t UrlScheme = URL_PREFIX;
-  uint8_t Url[] = PHYSICAL_WEB_URL;
+  uint8_t Url[17];
+  uint8_t i =0;
+
+  for (i=0; i<17; i++)
+  {
+    Url[i] = webURL[i];
+    if (Url[i] == '\0')
+    {
+      break;
+    }
+  }
 
   EddystoneURL_InitTypeDef EddystoneURL_InitStruct =
   {
@@ -123,10 +134,10 @@ void EddystoneURL_Start(void)
     .CalibratedTxPower = CALIBRATED_TX_POWER_AT_0_M,
     .UrlScheme = UrlScheme,
     .Url = Url,
-    .UrlLength = sizeof(Url) - 1
+    .UrlLength = i
   };
 
-  EddystoneURL_Init(&EddystoneURL_InitStruct);
+  return EddystoneURL_Init(&EddystoneURL_InitStruct);
 }
 
 /**
@@ -356,5 +367,9 @@ tBleStatus EddystoneURL_Init(EddystoneURL_InitTypeDef *EddystoneURL_Init)
 /**
  * @}
  */
+
+#ifdef __cplusplus
+ }
+#endif
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
