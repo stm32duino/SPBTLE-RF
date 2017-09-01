@@ -18,6 +18,10 @@
 #ifndef _LINK_LAYER_H
 #define _LINK_LAYER_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <ble_status.h>
 
 /** @addtogroup Middlewares
@@ -180,5 +184,9 @@ typedef	uint8_t	tBDAddr[6];
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _LINK_LAYER_H */

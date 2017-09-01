@@ -39,6 +39,10 @@
 #ifndef _CONNECTION_CONFIG_
 #define _CONNECTION_CONFIG_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** @addtogroup X-CUBE-BLE1_Applications
  *  @{
  */
@@ -102,6 +106,10 @@
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _CONNECTION_CONFIG_ */
 

@@ -13,6 +13,10 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 #include "hal_types.h"
 #include "osal.h"
 #include "ble_status.h"
@@ -262,5 +266,6 @@ tBleStatus aci_hal_get_anchor_period(uint32_t *anchor_period, uint32_t *max_free
   return 0;
 }
 
-
-
+#ifdef __cplusplus
+ }
+#endif

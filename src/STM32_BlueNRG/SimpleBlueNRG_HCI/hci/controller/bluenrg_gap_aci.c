@@ -13,6 +13,10 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 #include "hal_types.h"
 #include "osal.h"
 #include "ble_status.h"
@@ -1314,3 +1318,7 @@ tBleStatus aci_gap_get_bonded_devices(uint8_t *num_devices, uint8_t *device_list
 
   return 0;
 }
+
+#ifdef __cplusplus
+ }
+#endif

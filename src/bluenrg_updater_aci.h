@@ -16,6 +16,10 @@
 #ifndef __BLUENRG_UPDATER_ACI_H__
 #define __BLUENRG_UPDATER_ACI_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <compiler.h>
 
 /** @addtogroup Middlewares
@@ -97,5 +101,8 @@ typedef __packed struct _evt_blue_initialized{
  * @}
  */
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __BLUENRG_UPDATER_ACI_H__ */

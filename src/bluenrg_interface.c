@@ -35,6 +35,11 @@
   *
   ******************************************************************************
   */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Includes ------------------------------------------------------------------*/
 #include "bluenrg_interface.h"
 
@@ -43,16 +48,18 @@
 #include "hci.h"
 #include "stm32_bluenrg_ble.h"
 
-extern SPI_HandleTypeDef SpiHandle;
-
 /**
  * @brief  EXTI line detection callback.
  * @param  Specifies the pins connected EXTI line
  * @retval None
  */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+__weak void SPI_EXTI_Callback(void)
 {
   HCI_Isr();
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -13,6 +13,10 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 #include "hal_types.h"
 #include "osal.h"
 #include "ble_status.h"
@@ -1505,4 +1509,6 @@ tBleStatus aci_gatt_update_char_value_ext_IDB05A1(uint16_t service_handle, uint1
   return status;
 }
 
-
+#ifdef __cplusplus
+ }
+#endif

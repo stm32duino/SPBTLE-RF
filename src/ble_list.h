@@ -15,6 +15,10 @@
 #ifndef _BLE_LIST_H_
 #define _BLE_LIST_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct _tListNode {
 	struct _tListNode * next;
 	struct _tListNode * prev;
@@ -43,5 +47,9 @@ int list_get_size (tListNode * listHead);
 void list_get_next_node (tListNode * ref_node, tListNode ** node);
 
 void list_get_prev_node (tListNode * ref_node, tListNode ** node);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _BLE_LIST_H_ */

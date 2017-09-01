@@ -15,6 +15,10 @@
 #ifndef __BLE_STATUS_H__
 #define __BLE_STATUS_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <hal_types.h>
 
 /** @addtogroup Middlewares
@@ -184,5 +188,9 @@ typedef uint8_t tBleStatus;
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __BLE_STATUS_H__ */

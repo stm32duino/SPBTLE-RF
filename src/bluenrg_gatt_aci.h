@@ -16,6 +16,10 @@
 #ifndef __BLUENRG_GATT_ACI_H__
 #define __BLUENRG_GATT_ACI_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "bluenrg_gatt_server.h"
 
 /** @addtogroup Middlewares
@@ -1140,5 +1144,9 @@ typedef __packed struct _evt_gatt_prepare_write_permit_req{
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __BLUENRG_GATT_ACI_H__ */

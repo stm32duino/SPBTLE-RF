@@ -16,6 +16,10 @@
 #ifndef __BLUENRG_ACI_CONST_H_
 #define __BLUENRG_ACI_CONST_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "compiler.h"
 #include "link_layer.h"
 #include "hci_const.h"
@@ -835,5 +839,9 @@ typedef __packed struct _evt_blue_aci{
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __BLUENRG_ACI_CONST_H_ */

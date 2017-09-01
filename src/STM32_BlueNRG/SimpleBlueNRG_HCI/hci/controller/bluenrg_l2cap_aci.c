@@ -13,6 +13,10 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 #include "hal_types.h"
 #include "osal.h"
 #include "ble_status.h"
@@ -117,3 +121,7 @@ tBleStatus aci_l2cap_connection_parameter_update_response_IDB04A1(uint16_t conn_
 
   return status;
 }
+
+#ifdef __cplusplus
+ }
+#endif

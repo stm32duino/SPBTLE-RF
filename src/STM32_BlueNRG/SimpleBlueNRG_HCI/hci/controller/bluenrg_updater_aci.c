@@ -13,6 +13,10 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 #include "hal_types.h"
 #include "osal.h"
 #include "ble_status.h"
@@ -265,6 +269,6 @@ tBleStatus aci_updater_hw_version(uint8_t *version)
   return resp.status;
 }
 
-
-
-
+#ifdef __cplusplus
+ }
+#endif

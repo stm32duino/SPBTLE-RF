@@ -39,14 +39,21 @@
 #ifndef __BLUENRG_INTERFACE_H_
 #define __BLUENRG_INTERFACE_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Includes ------------------------------------------------------------------*/
 #include "stm32_bluenrg_ble.h"
 #include "hal_types.h"
 
 void Hal_Write_Serial(const void* data1, const void* data2, int32_t n_bytes1,
                       int32_t n_bytes2);
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+void SPI_EXTI_Callback(void);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif //__BLUENRG_INTERFACE_H_
 

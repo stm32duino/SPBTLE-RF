@@ -17,12 +17,20 @@
 #ifndef __BLE_CLOCK_H__
 #define __BLE_CLOCK_H__
 
-#include "bluenrg_itf.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "wiring_time.h"
 
 typedef uint32_t tClockTime;
 #define CLOCK_SECOND 1000
 #define Clock_Init()
-#define Clock_Time HAL_GetTick
-#define Clock_Wait HAL_Delay
+#define Clock_Time millis
+#define Clock_Wait delay
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __BLE_CLOCK_H__ */

@@ -32,6 +32,10 @@
  *
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "ble_clock.h"
 #include "gp_timer.h"
 
@@ -152,4 +156,8 @@ tBleStatus Blue_NRG_HCI_Timer_Stop(uint8_t timerID)
 }
 
 #endif /* __DMA_LP__ */
+
+#ifdef __cplusplus
+ }
+#endif
 /*---------------------------------------------------------------------------*/

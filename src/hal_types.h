@@ -16,6 +16,10 @@
 #ifndef __HAL_TYPES_H__
 #define __HAL_TYPES_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 #ifndef NULL
@@ -52,7 +56,8 @@ typedef uint8_t BOOL;
 #define FALSE (0)
 #endif
 
-
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __HAL_TYPES_H__ */
-

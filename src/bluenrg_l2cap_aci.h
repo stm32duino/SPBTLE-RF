@@ -16,6 +16,10 @@
 #ifndef __BLUENRG_L2CAP_ACI_H__
 #define __BLUENRG_L2CAP_ACI_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** @addtogroup Middlewares
  *  @{
  */
@@ -186,5 +190,9 @@ typedef __packed struct _evt_l2cap_conn_upd_req{
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __BLUENRG_L2CAP_ACI_H__ */

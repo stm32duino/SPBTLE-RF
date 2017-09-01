@@ -16,7 +16,12 @@
 #ifndef __HCI_H_
 #define __HCI_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "hal_types.h"
+#include "hal.h"
 #include "link_layer.h"
 #include <ble_list.h>
 
@@ -108,16 +113,10 @@ BOOL HCI_Queue_Empty(void);
  * reports a packet received or an event to the host through the
  * BlueNRG interrupt line.
  */
-#ifdef __DMA_LP__
-void HCI_Isr(uint8_t *buffer, uint8_t event_payload_len);
-void HCI_Process_Notification_Request(void);
-void HCI_Cmd_Status(HCI_CMD_STATUS_t Hci_Cmd_Status);
-void HCI_Wait_For_Response(void);
-#else
 void HCI_Isr(void);
 
 int hci_send_req(struct hci_request *r, BOOL async);
-#endif /* __DMA_LP__ */
+
 
 extern tListNode hciReadPktPool;
 extern tListNode hciReadPktRxQueue;
@@ -133,5 +132,9 @@ extern tListNode hciReadPktRxQueue;
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __HCI_H_ */

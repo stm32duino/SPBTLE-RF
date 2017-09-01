@@ -17,6 +17,10 @@
 #ifndef __HAL_H__
 #define __HAL_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /******************************************************************************
  * Includes
  *****************************************************************************/
@@ -98,9 +102,10 @@ void Enable_SPI_IRQ(void);
  */
 void Disable_SPI_IRQ(void);
 
-void Hal_Init_Timer(void);
-uint32_t Hal_Get_Timer_Value(void);
-void Hal_Start_Timer(uint32_t timeout);
-void Hal_Stop_Timer(void);
+void Clear_SPI_EXTI_Flag(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __HAL_H__ */

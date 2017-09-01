@@ -16,12 +16,18 @@
   * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
   */
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 #include "hal_types.h"
 #include "osal.h"
 #include "ble_status.h"
 #include "hal.h"
 #include "hci_const.h"
 #include "gp_timer.h"
+#include "bluenrg_interface.h"
+#include "ble_list.h"
 
 #include "stm32_bluenrg_ble.h"
 
@@ -353,3 +359,6 @@ done:
   return 0;
 }
 
+#ifdef __cplusplus
+ }
+#endif

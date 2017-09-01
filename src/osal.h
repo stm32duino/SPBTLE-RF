@@ -19,6 +19,10 @@
 #ifndef __OSAL_H__
 #define __OSAL_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /******************************************************************************
  * Includes
  *****************************************************************************/
@@ -77,5 +81,9 @@ extern void* Osal_MemSet(void *ptr, int value, unsigned int size);
  */
 uint32_t Osal_Get_Cur_Time(void);
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __OSAL_H__ */

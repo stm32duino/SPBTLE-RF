@@ -16,6 +16,10 @@
 #ifndef __GATT_SERVER_H__
 #define __GATT_SERVER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "compiler.h"
 #include "ble_status.h"
 
@@ -242,5 +246,8 @@ typedef __packed struct _charactFormat {
  * @}
  */
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __GATT_SERVER_H__ */

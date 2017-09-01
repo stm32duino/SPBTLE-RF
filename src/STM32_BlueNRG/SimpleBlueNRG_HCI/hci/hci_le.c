@@ -16,6 +16,10 @@
   * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
   */
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 #include "hal_types.h"
 #include "osal.h"
 #include "ble_status.h"
@@ -835,3 +839,7 @@ int hci_le_test_end(uint16_t *num_pkts)
 
   return 0;
 }
+
+#ifdef __cplusplus
+ }
+#endif

@@ -1,3 +1,6 @@
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
 #include "hal.h"
 #include "hal_types.h"
@@ -405,3 +408,7 @@ uint8_t isHWBootloader_Patched(void)
 
   return 1;
 }
+
+#ifdef __cplusplus
+ }
+#endif

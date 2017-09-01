@@ -13,6 +13,10 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 //#ifdef __ICCARM__
@@ -41,5 +45,9 @@
 
 /* Change this define to 1 if zero-length arrays are not supported by your compiler. */
 #define VARIABLE_SIZE
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

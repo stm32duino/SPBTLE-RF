@@ -44,29 +44,8 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#ifdef USE_STM32F4XX_NUCLEO
-  #include "stm32f4xx_hal.h"
-  #include "stm32f4xx_nucleo.h"
-  #include "stm32f4xx_nucleo_bluenrg.h"
-  #define SYSCLK_FREQ 84000000
-  #define SYSCLK_FREQ_SLEEP 32000
-#endif
+#include "stm32_def.h"
 
-#ifdef USE_STM32L0XX_NUCLEO
-  #include "stm32l0xx_hal.h"
-  #include "stm32l0xx_nucleo.h"
-  #include "stm32l0xx_nucleo_bluenrg.h"
-  #define SYSCLK_FREQ 32000000
-  #define SYSCLK_FREQ_SLEEP 32000
-#endif
-
-#ifdef USE_STM32L4XX_NUCLEO
-  #include "stm32l4xx_hal.h"
-  #include "stm32l4xx_nucleo.h"
-  #include "stm32l4xx_nucleo_bluenrg.h"
-  #define SYSCLK_FREQ 80000000
-  #define SYSCLK_FREQ_SLEEP 32000
-#endif
 
 /** @addtogroup BSP
  *  @{
@@ -95,14 +74,6 @@ int32_t BlueNRG_SPI_Write(uint8_t* data1,
                           uint8_t* data2,
                           uint8_t Nb_bytes1,
                           uint8_t Nb_bytes2);
-#ifdef OPTIMIZED_SPI
-/* Optimized functions for throughput test */
-/* Used by the server (L0 and F4, not L4) */
-HAL_StatusTypeDef HAL_SPI_TransmitReceive_Opt(const uint8_t *pTxData, uint8_t *pRxData, uint8_t Size);
-HAL_StatusTypeDef HAL_SPI_Transmit_Opt(const uint8_t *pTxData, uint8_t Size);
-HAL_StatusTypeDef HAL_SPI_Receive_Opt(uint8_t *pRxData, uint8_t Size);
-#endif /* OPTIMIZED_SPI */
-
 
 /**
  * @}

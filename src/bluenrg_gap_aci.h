@@ -16,6 +16,10 @@
 #ifndef __BLUENRG_GAP_ACI_H__
 #define __BLUENRG_GAP_ACI_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** @addtogroup Middlewares
  *  @{
  */
@@ -673,8 +677,8 @@ tBleStatus aci_gap_start_general_discovery_proc(uint16_t scanInterval, uint16_t 
 /**
  * @brief Start the name discovery procedure.
  * @note  A LE_Create_Connection call will be made to the controller by GAP with the initiator filter
- * 		  policy set to “ignore whitelist and process connectable advertising packets only for the
- * 		  specified device”. Once a connection is established, GATT procedure is started to read the
+ * 		  policy set to ï¿½ignore whitelist and process connectable advertising packets only for the
+ * 		  specified deviceï¿½. Once a connection is established, GATT procedure is started to read the
  * 		  device name characteristic. When the read is completed (successfully or unsuccessfully),
  * 		  a @ref EVT_BLUE_GAP_PROCEDURE_COMPLETE event is given to the upper layer. The event also
  * 		  contains the name of the device if the device name was read successfully.
@@ -724,7 +728,7 @@ tBleStatus aci_gap_start_name_discovery_proc(uint16_t scanInterval, uint16_t sca
  * @brief Start the auto connection establishment procedure.
  * @note The devices specified are added to the white list of the controller and a LE_Create_Connection
  * 		 call will be made to the controller by GAP with the initiator filter policy set to
- * 		 “use whitelist to determine which advertiser to connect to”. When a command is issued to
+ * 		 ï¿½use whitelist to determine which advertiser to connect toï¿½. When a command is issued to
  * 		 terminate the procedure by upper layer, a LE_Create_Connection_Cancel call will be made to the
  * 		 controller by GAP.
  * 		 The procedure is terminated when either a connection is successfully established with one of
@@ -798,7 +802,7 @@ tBleStatus aci_gap_start_auto_conn_establish_proc_IDB04A1(uint16_t scanInterval,
 /**
  * @brief Start a general connection establishment procedure.
  * @note  The host enables scanning in the controller with the scanner filter policy set
- *        to “accept all advertising packets” and from the scanning results all the devices
+ *        to ï¿½accept all advertising packetsï¿½ and from the scanning results all the devices
  *        are sent to the upper layer using the event @ref EVT_BLUE_GAP_DEVICE_FOUND (for IDB04A1) or @ref EVT_LE_ADVERTISING_REPORT (for IDB05A1).
  *        The upper layer then has to select one of the devices to which it wants to connect
  *        by issuing the command aci_gap_create_connection(). The procedure is terminated
@@ -836,8 +840,8 @@ tBleStatus aci_gap_start_general_conn_establish_proc_IDB04A1(uint8_t scan_type, 
 /**
  * @brief Start a selective connection establishment procedure.
  * @note  The GAP adds the specified device addresses into white list and enables scanning in
- * 		  the controller with the scanner filter policy set to “accept packets only from
- * 		  devices in whitelist”. All the devices found are sent to the upper layer by the
+ * 		  the controller with the scanner filter policy set to ï¿½accept packets only from
+ * 		  devices in whitelistï¿½. All the devices found are sent to the upper layer by the
  * 		  event @ref EVT_BLUE_GAP_DEVICE_FOUND (for IDB04A1) or @ref EVT_LE_ADVERTISING_REPORT (for IDB05A1). The upper layer then has to select one of the
  * 		  devices to which it wants to connect by issuing the command aci_gap_create_connection().
  * 		  On completion of the procedure a  @ref EVT_BLUE_GAP_PROCEDURE_COMPLETE event is generated
@@ -876,8 +880,8 @@ tBleStatus aci_gap_start_selective_conn_establish_proc(uint8_t scan_type, uint16
 /**
  * @brief Start the direct connection establishment procedure.
  * @note  A LE_Create_Connection call will be made to the controller by GAP with the initiator filter
- * 		  policy set to “ignore whitelist and process connectable advertising packets only for the
- * 		  specified device”. The procedure can be terminated explicitly by the upper layer by issuing
+ * 		  policy set to ï¿½ignore whitelist and process connectable advertising packets only for the
+ * 		  specified deviceï¿½. The procedure can be terminated explicitly by the upper layer by issuing
  * 		  the command aci_gap_terminate_gap_procedure(). When a command is issued to terminate the
  * 		  procedure by upper layer, a LE_Create_Connection_Cancel call will be made to the controller
  * 		  by GAP.
@@ -1254,5 +1258,9 @@ typedef __packed struct _evt_gap_reconnection_addr_IDB04A1{
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __BLUENRG_GAP_ACI_H__ */

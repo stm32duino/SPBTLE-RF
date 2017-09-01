@@ -16,11 +16,12 @@
 #ifndef __GP_TIMER_H__
 #define __GP_TIMER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "ble_clock.h"
 #include "ble_status.h"
-#ifdef __DMA_LP__
-#include "stm32xx_timerserver.h"
-#endif /* __DMA_LP__ */
 
 /**
  * timer
@@ -94,12 +95,8 @@ int Timer_Expired(struct timer *t);
  */
 tClockTime Timer_Remaining(struct timer *t);
 
-#ifdef __DMA_LP__
-tBleStatus Blue_NRG_HCI_Timer_Start(uint32_t expiryTime,
-		TIMER_HCI_TIMEOUT_NOTIFY_CALLBACK_TYPE timercb,
-					   uint8_t *timerID);
-
-tBleStatus Blue_NRG_HCI_Timer_Stop(uint8_t timerID);
-#endif /* __DMA_LP__ */
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __GP_TIMER_H__ */

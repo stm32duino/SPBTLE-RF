@@ -13,6 +13,10 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /******************************************************************************
  * Include Files
 ******************************************************************************/
@@ -197,3 +201,7 @@ void list_get_prev_node (tListNode * ref_node, tListNode ** node)
   __set_PRIMASK(uwPRIMASK_Bit);      /**< Restore PRIMASK bit*/
 }
 
+
+#ifdef __cplusplus
+ }
+#endif

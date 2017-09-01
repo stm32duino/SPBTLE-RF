@@ -1,3 +1,6 @@
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
 #include "hal.h"
 #include "hal_types.h"
@@ -357,3 +360,6 @@ const IFR_config_TypeDef IFR_config = {
 #warning BLUENRG_CONFIG not valid
 #endif
 
+#ifdef __cplusplus
+ }
+#endif

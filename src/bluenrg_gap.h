@@ -15,6 +15,10 @@
 #ifndef __GAP_H__
 #define __GAP_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <link_layer.h>
 
 /** @addtogroup Middlewares
@@ -247,5 +251,9 @@
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __GAP_H__ */

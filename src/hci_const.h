@@ -10,6 +10,10 @@
 #ifndef __HCI_INTERNAL_H_
 #define __HCI_INTERNAL_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "compiler.h"
 #include "hal_types.h"
 #include "ble_clock.h"
@@ -544,5 +548,9 @@ typedef void (*hci_packet_complete_callback)(void *pckt, uint16_t len);
 /* HCI library functions. */
 
 int hci_send_req(struct hci_request *r, BOOL async);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __HCI_INTERNAL_H_ */
