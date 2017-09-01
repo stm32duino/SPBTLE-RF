@@ -3,7 +3,7 @@
 * Author             : AMS - VMA, RF Application Team
 * Version            : V1.0.1
 * Date               : 03-October-2014
-* Description        : Header file for BlueNRG utility functions 
+* Description        : Header file for BlueNRG utility functions
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
@@ -27,7 +27,7 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "hal_types.h" 
+#include "hal_types.h"
 #include "compiler.h"
 
 /* Exported types ------------------------------------------------------------*/
@@ -42,7 +42,7 @@ typedef struct{
 } IFR_config2_TypeDef;
 
 /**
- * Structure inside IFR for configuration options. 
+ * Structure inside IFR for configuration options.
  */
 typedef __packed struct{
   uint8_t cold_ana_act_config_table[64];
@@ -61,7 +61,7 @@ typedef __packed struct{
   uint8_t rsrvd4[2];
   uint32_t uid;
   uint8_t rsrvd5;
-  uint8_t year;  
+  uint8_t year;
   uint8_t month;
   uint8_t day;
   uint32_t unused[5];
@@ -80,9 +80,9 @@ extern const IFR_config_TypeDef IFR_config;
 /* Convert 2 digit number to a BCD number */
 #define INT_TO_BCD(n) ((((uint8_t)n/10)<<4) + (uint8_t)n%10)
 
-/** 
-  * Return values 
-  */ 
+/**
+  * Return values
+  */
 #define BLE_UTIL_SUCCESS                 0
 #define BLE_UTIL_UNSUPPORTED_VERSION     1
 #define BLE_UTIL_WRONG_IMAGE_SIZE        2
@@ -91,7 +91,7 @@ extern const IFR_config_TypeDef IFR_config;
 #define BLE_UTIL_PARSE_ERROR             5
 #define BLE_UTIL_WRONG_VERIFY            6
 
-/* Exported functions ------------------------------------------------------- */ 
+/* Exported functions ------------------------------------------------------- */
 /**
   * @brief  Flash a new firmware using internal bootloader.
   * @param  fw_image     Pointer to the firmware image (raw binary data,
@@ -175,7 +175,7 @@ uint8_t getBlueNRGVersion(uint8_t *hwVersion, uint16_t *fwVersion);
 
 /**
   * @brief  Get BlueNRG updater version
-  * @param  version This parameter returns the updater version. If the updadter version is 0x03 
+  * @param  version This parameter returns the updater version. If the updadter version is 0x03
   *                 the chip has the updater old, needs to update the bootloader.
   * @retval Status of the call
   */
@@ -187,7 +187,7 @@ uint8_t getBlueNRGUpdaterVersion(uint8_t *version);
   * @retval TRUE if the HW bootloader is already patched, FALSE otherwise
   */
 uint8_t isHWBootloader_Patched(void);
-   
+
 #ifdef __cplusplus
 }
 #endif

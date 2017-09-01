@@ -139,7 +139,7 @@ tBleStatus Blue_NRG_HCI_Timer_Start(uint32_t expiryTime,
   TIMER_Create(eTimerModuleID_BlueNRG_HCI, timerID, eTimerMode_SingleShot,
                (pf_TIMER_TimerCallBack_t) timercb);
   TIMER_Start(*timerID, expiryTime*1000/TIMERSERVER_TICK_VALUE);
-  
+
   return (BLE_STATUS_SUCCESS);
 }
 
@@ -147,7 +147,7 @@ tBleStatus Blue_NRG_HCI_Timer_Start(uint32_t expiryTime,
 tBleStatus Blue_NRG_HCI_Timer_Stop(uint8_t timerID)
 {
   TIMER_Delete(timerID);
-  
+
   return (BLE_STATUS_SUCCESS);
 }
 

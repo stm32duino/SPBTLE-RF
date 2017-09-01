@@ -48,30 +48,30 @@ tBleStatus aci_gatt_init(void)
 tBleStatus aci_gatt_add_serv(uint8_t service_uuid_type, const uint8_t* service_uuid, uint8_t service_type, uint8_t max_attr_records, uint16_t *serviceHandle)
 {
   struct hci_request rq;
-  gatt_add_serv_rp resp;    
+  gatt_add_serv_rp resp;
   uint8_t buffer[19];
   uint8_t uuid_len;
   uint8_t indx = 0;
-    
+
   buffer[indx] = service_uuid_type;
   indx++;
-    
+
   if(service_uuid_type == UUID_TYPE_16){
     uuid_len = 2;
   }
   else {
     uuid_len = 16;
-  }        
+  }
   Osal_MemCpy(buffer + indx, service_uuid, uuid_len);
   indx +=  uuid_len;
-    
+
   buffer[indx] = service_type;
   indx++;
-    
+
   buffer[indx] = max_attr_records;
   indx++;
-    
-    
+
+
   Osal_MemSet(&resp, 0, sizeof(resp));
 
   Osal_MemSet(&rq, 0, sizeof(rq));
@@ -88,7 +88,7 @@ tBleStatus aci_gatt_add_serv(uint8_t service_uuid_type, const uint8_t* service_u
   if (resp.status) {
     return resp.status;
   }
-    
+
   *serviceHandle = btohs(resp.handle);
 
   return 0;
@@ -99,7 +99,7 @@ tBleStatus aci_gatt_include_service(uint16_t service_handle, uint16_t included_s
 				    const uint8_t* included_uuid, uint16_t *included_handle)
 {
   struct hci_request rq;
-  gatt_include_serv_rp resp;    
+  gatt_include_serv_rp resp;
   uint8_t buffer[23];
   uint8_t uuid_len;
   uint8_t indx = 0;
@@ -107,7 +107,7 @@ tBleStatus aci_gatt_include_service(uint16_t service_handle, uint16_t included_s
   service_handle = htobs(service_handle);
   Osal_MemCpy(buffer, &service_handle, 2);
   indx += 2;
-    
+
   included_start_handle = htobs(included_start_handle);
   Osal_MemCpy(buffer+indx, &included_start_handle, 2);
   indx += 2;
@@ -120,14 +120,14 @@ tBleStatus aci_gatt_include_service(uint16_t service_handle, uint16_t included_s
     uuid_len = 2;
   } else {
     uuid_len = 16;
-  }        
+  }
 
   buffer[indx] = included_uuid_type;
   indx++;
 
   Osal_MemCpy(buffer + indx, included_uuid, uuid_len);
   indx += uuid_len;
-    
+
   Osal_MemSet(&resp, 0, sizeof(resp));
 
   Osal_MemSet(&rq, 0, sizeof(rq));
@@ -144,7 +144,7 @@ tBleStatus aci_gatt_include_service(uint16_t service_handle, uint16_t included_s
   if (resp.status) {
     return resp.status;
   }
-    
+
   *included_handle = btohs(resp.handle);
 
   return 0;
@@ -152,55 +152,55 @@ tBleStatus aci_gatt_include_service(uint16_t service_handle, uint16_t included_s
 
 tBleStatus aci_gatt_add_char(uint16_t serviceHandle,
 			     uint8_t charUuidType,
-			     const uint8_t* charUuid, 
-			     uint8_t charValueLen, 
+			     const uint8_t* charUuid,
+			     uint8_t charValueLen,
 			     uint8_t charProperties,
 			     uint8_t secPermissions,
 			     uint8_t gattEvtMask,
 			     uint8_t encryKeySize,
 			     uint8_t isVariable,
-			     uint16_t* charHandle)                     
+			     uint16_t* charHandle)
 {
   struct hci_request rq;
   gatt_add_serv_rp resp;
   uint8_t buffer[25];
   uint8_t uuid_len;
   uint8_t indx = 0;
-    
+
   serviceHandle = htobs(serviceHandle);
   Osal_MemCpy(buffer + indx, &serviceHandle, 2);
   indx += 2;
-    
+
   buffer[indx] = charUuidType;
   indx++;
-    
+
   if(charUuidType == UUID_TYPE_16){
     uuid_len = 2;
   }
   else {
     uuid_len = 16;
-  }        
+  }
   Osal_MemCpy(buffer + indx, charUuid, uuid_len);
   indx +=  uuid_len;
-    
+
   buffer[indx] = charValueLen;
   indx++;
-    
+
   buffer[indx] = charProperties;
   indx++;
-    
+
   buffer[indx] = secPermissions;
   indx++;
-    
+
   buffer[indx] = gattEvtMask;
   indx++;
-    
+
   buffer[indx] = encryKeySize;
   indx++;
-    
+
   buffer[indx] = isVariable;
   indx++;
-    
+
   Osal_MemSet(&resp, 0, sizeof(resp));
 
   Osal_MemSet(&rq, 0, sizeof(rq));
@@ -217,7 +217,7 @@ tBleStatus aci_gatt_add_char(uint16_t serviceHandle,
   if (resp.status) {
     return resp.status;
   }
-    
+
   *charHandle = btohs(resp.handle);
 
   return 0;
@@ -226,70 +226,70 @@ tBleStatus aci_gatt_add_char(uint16_t serviceHandle,
 tBleStatus aci_gatt_add_char_desc(uint16_t serviceHandle,
                                   uint16_t charHandle,
                                   uint8_t descUuidType,
-                                  const uint8_t* uuid, 
+                                  const uint8_t* uuid,
                                   uint8_t descValueMaxLen,
                                   uint8_t descValueLen,
-                                  const void* descValue, 
+                                  const void* descValue,
                                   uint8_t secPermissions,
                                   uint8_t accPermissions,
                                   uint8_t gattEvtMask,
                                   uint8_t encryKeySize,
                                   uint8_t isVariable,
-                                  uint16_t* descHandle)                     
+                                  uint16_t* descHandle)
 {
   struct hci_request rq;
   gatt_add_char_desc_rp resp;
   uint8_t buffer[HCI_MAX_PAYLOAD_SIZE];
   uint8_t uuid_len;
   uint8_t indx = 0;
-    
+
   serviceHandle = htobs(serviceHandle);
   Osal_MemCpy(buffer + indx, &serviceHandle, 2);
   indx += 2;
-    
+
   charHandle = htobs(charHandle);
   Osal_MemCpy(buffer + indx, &charHandle, 2);
   indx += 2;
-    
+
   buffer[indx] = descUuidType;
   indx++;
-    
+
   if(descUuidType == UUID_TYPE_16){
     uuid_len = 2;
   }
   else {
     uuid_len = 16;
-  }        
+  }
   Osal_MemCpy(buffer + indx, uuid, uuid_len);
   indx +=  uuid_len;
-    
+
   buffer[indx] = descValueMaxLen;
   indx++;
-    
+
   buffer[indx] = descValueLen;
   indx++;
 
   if ((descValueLen+indx+5) > HCI_MAX_PAYLOAD_SIZE)
     return BLE_STATUS_INVALID_PARAMS;
-  
+
   Osal_MemCpy(buffer + indx, descValue, descValueLen);
   indx += descValueLen;
-    
+
   buffer[indx] = secPermissions;
   indx++;
-    
+
   buffer[indx] = accPermissions;
   indx++;
-    
+
   buffer[indx] = gattEvtMask;
   indx++;
-    
+
   buffer[indx] = encryKeySize;
   indx++;
-    
+
   buffer[indx] = isVariable;
   indx++;
-    
+
   Osal_MemSet(&resp, 0, sizeof(resp));
 
   Osal_MemSet(&rq, 0, sizeof(rq));
@@ -306,41 +306,41 @@ tBleStatus aci_gatt_add_char_desc(uint16_t serviceHandle,
   if (resp.status) {
     return resp.status;
   }
-    
+
   *descHandle = btohs(resp.handle);
 
   return 0;
 }
 
 
-tBleStatus aci_gatt_update_char_value(uint16_t servHandle, 
+tBleStatus aci_gatt_update_char_value(uint16_t servHandle,
 				      uint16_t charHandle,
 				      uint8_t charValOffset,
-				      uint8_t charValueLen,   
+				      uint8_t charValueLen,
                                       const void *charValue)
 {
   struct hci_request rq;
   uint8_t status;
   uint8_t buffer[HCI_MAX_PAYLOAD_SIZE];
   uint8_t indx = 0;
-    
+
   if ((charValueLen+6) > HCI_MAX_PAYLOAD_SIZE)
     return BLE_STATUS_INVALID_PARAMS;
 
   servHandle = htobs(servHandle);
   Osal_MemCpy(buffer + indx, &servHandle, 2);
   indx += 2;
-    
+
   charHandle = htobs(charHandle);
   Osal_MemCpy(buffer + indx, &charHandle, 2);
   indx += 2;
-    
+
   buffer[indx] = charValOffset;
   indx++;
-    
+
   buffer[indx] = charValueLen;
   indx++;
-        
+
   Osal_MemCpy(buffer + indx, charValue, charValueLen);
   indx +=  charValueLen;
 
@@ -384,7 +384,7 @@ tBleStatus aci_gatt_del_char(uint16_t servHandle, uint16_t charHandle)
 
   return status;
 }
-                                      
+
 tBleStatus aci_gatt_del_service(uint16_t servHandle)
 {
   struct hci_request rq;
@@ -451,7 +451,7 @@ tBleStatus aci_gatt_set_event_mask(uint32_t event_mask)
 
   return status;
 }
-  
+
 tBleStatus aci_gatt_exchange_configuration(uint16_t conn_handle)
 {
   struct hci_request rq;
@@ -465,7 +465,7 @@ tBleStatus aci_gatt_exchange_configuration(uint16_t conn_handle)
   rq.ocf = OCF_GATT_EXCHANGE_CONFIG;
   rq.cparam = &cp;
   rq.clen = GATT_EXCHANGE_CONFIG_CP_SIZE;
-  rq.event = EVT_CMD_STATUS; 
+  rq.event = EVT_CMD_STATUS;
   rq.rparam = &status;
   rq.rlen = 1;
 
@@ -474,7 +474,7 @@ tBleStatus aci_gatt_exchange_configuration(uint16_t conn_handle)
 
   return status;
 }
-  
+
 tBleStatus aci_att_find_information_req(uint16_t conn_handle, uint16_t start_handle, uint16_t end_handle)
 {
   struct hci_request rq;
@@ -505,7 +505,7 @@ tBleStatus aci_att_find_by_type_value_req(uint16_t conn_handle, uint16_t start_h
   struct hci_request rq;
   uint8_t status;
   att_find_by_type_value_req_cp cp;
-  
+
   if(attr_val_len > sizeof(cp.attr_val))
     return BLE_STATUS_INVALID_PARAMS;
 
@@ -537,7 +537,7 @@ tBleStatus aci_att_read_by_type_req(uint16_t conn_handle, uint16_t start_handle,
   uint8_t status;
   att_read_by_type_req_cp cp;
   uint8_t uuid_len;
-  
+
   if(uuid_type == UUID_TYPE_16){
     uuid_len = 2;
   }
@@ -572,7 +572,7 @@ tBleStatus aci_att_read_by_group_type_req(uint16_t conn_handle, uint16_t start_h
   uint8_t status;
   att_read_by_group_type_req_cp cp;
   uint8_t uuid_len;
-  
+
   if(uuid_type == UUID_TYPE_16){
     uuid_len = 2;
   }
@@ -606,7 +606,7 @@ tBleStatus aci_att_prepare_write_req(uint16_t conn_handle, uint16_t attr_handle,
   struct hci_request rq;
   uint8_t status;
   att_prepare_write_req_cp cp;
-  
+
   if(attr_val_len > sizeof(cp.attr_val))
     return BLE_STATUS_INVALID_PARAMS;
 
@@ -682,7 +682,7 @@ tBleStatus aci_gatt_disc_prim_service_by_uuid(uint16_t conn_handle, uint8_t uuid
   uint8_t status;
   gatt_disc_prim_service_by_uuid_cp cp;
   uint8_t uuid_len;
-  
+
   if(uuid_type == UUID_TYPE_16){
     uuid_len = 2;
   }
@@ -709,7 +709,7 @@ tBleStatus aci_gatt_disc_prim_service_by_uuid(uint16_t conn_handle, uint8_t uuid
   return status;
 }
 
-tBleStatus aci_gatt_find_included_services(uint16_t conn_handle, uint16_t start_service_handle, 
+tBleStatus aci_gatt_find_included_services(uint16_t conn_handle, uint16_t start_service_handle,
 					   uint16_t end_service_handle)
 {
   struct hci_request rq;
@@ -735,7 +735,7 @@ tBleStatus aci_gatt_find_included_services(uint16_t conn_handle, uint16_t start_
   return status;
 }
 
-tBleStatus aci_gatt_disc_all_charac_of_serv(uint16_t conn_handle, uint16_t start_attr_handle, 
+tBleStatus aci_gatt_disc_all_charac_of_serv(uint16_t conn_handle, uint16_t start_attr_handle,
 					    uint16_t end_attr_handle)
 {
   struct hci_request rq;
@@ -767,32 +767,32 @@ tBleStatus aci_gatt_disc_charac_by_uuid(uint16_t conn_handle, uint16_t start_han
 {
   struct hci_request rq;
   uint8_t status;
-  
+
   uint8_t buffer[23];
   uint8_t uuid_len;
   uint8_t indx = 0;
-    
+
   conn_handle = htobs(conn_handle);
   Osal_MemCpy(buffer + indx, &conn_handle, 2);
   indx += 2;
-    
+
   start_handle = htobs(start_handle);
   Osal_MemCpy(buffer + indx, &start_handle, 2);
   indx += 2;
-  
+
   end_handle = htobs(end_handle);
   Osal_MemCpy(buffer + indx, &end_handle, 2);
   indx += 2;
-  
+
   buffer[indx] = charUuidType;
   indx++;
-    
+
   if(charUuidType == 0x01){
     uuid_len = 2;
   }
   else {
     uuid_len = 16;
-  }        
+  }
   Osal_MemCpy(buffer + indx, charUuid, uuid_len);
   indx +=  uuid_len;
 
@@ -811,7 +811,7 @@ tBleStatus aci_gatt_disc_charac_by_uuid(uint16_t conn_handle, uint16_t start_han
   return status;
 }
 
-tBleStatus aci_gatt_disc_all_charac_descriptors(uint16_t conn_handle, uint16_t char_val_handle, 
+tBleStatus aci_gatt_disc_all_charac_descriptors(uint16_t conn_handle, uint16_t char_val_handle,
 						uint16_t char_end_handle)
 {
   struct hci_request rq;
@@ -857,7 +857,7 @@ tBleStatus aci_gatt_read_charac_val(uint16_t conn_handle, uint16_t attr_handle)
 
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-  
+
   return status;
 }
 
@@ -868,7 +868,7 @@ tBleStatus aci_gatt_read_using_charac_uuid(uint16_t conn_handle, uint16_t start_
   uint8_t status;
   gatt_read_using_charac_uuid_cp cp;
   uint8_t uuid_len;
-  
+
   if(uuid_type == UUID_TYPE_16){
     uuid_len = 2;
   }
@@ -896,7 +896,7 @@ tBleStatus aci_gatt_read_using_charac_uuid(uint16_t conn_handle, uint16_t start_
   return status;
 }
 
-tBleStatus aci_gatt_read_long_charac_val(uint16_t conn_handle, uint16_t attr_handle, 
+tBleStatus aci_gatt_read_long_charac_val(uint16_t conn_handle, uint16_t attr_handle,
 					 uint16_t val_offset)
 {
   struct hci_request rq;
@@ -922,13 +922,13 @@ tBleStatus aci_gatt_read_long_charac_val(uint16_t conn_handle, uint16_t attr_han
   return status;
 }
 
-tBleStatus aci_gatt_read_multiple_charac_val(uint16_t conn_handle, uint8_t num_handles, 
+tBleStatus aci_gatt_read_multiple_charac_val(uint16_t conn_handle, uint8_t num_handles,
                                              uint8_t* set_of_handles)
 {
   struct hci_request rq;
   uint8_t status;
   gatt_read_multiple_charac_val_cp cp;
-  
+
   if(num_handles*2 > sizeof(cp.set_of_handles))
     return BLE_STATUS_INVALID_PARAMS;
 
@@ -953,28 +953,28 @@ tBleStatus aci_gatt_read_multiple_charac_val(uint16_t conn_handle, uint8_t num_h
 
 
 
-tBleStatus aci_gatt_write_charac_value(uint16_t conn_handle, uint16_t attr_handle, 
+tBleStatus aci_gatt_write_charac_value(uint16_t conn_handle, uint16_t attr_handle,
 				       uint8_t value_len, uint8_t *attr_value)
 {
   struct hci_request rq;
   uint8_t status;
   uint8_t buffer[HCI_MAX_PAYLOAD_SIZE];
   uint8_t indx = 0;
-    
+
   if ((value_len+5) > HCI_MAX_PAYLOAD_SIZE)
     return BLE_STATUS_INVALID_PARAMS;
 
   conn_handle = htobs(conn_handle);
   Osal_MemCpy(buffer + indx, &conn_handle, 2);
   indx += 2;
-    
+
   attr_handle = htobs(attr_handle);
   Osal_MemCpy(buffer + indx, &attr_handle, 2);
   indx += 2;
 
   buffer[indx] = value_len;
   indx++;
-        
+
   Osal_MemCpy(buffer + indx, attr_value, value_len);
   indx +=  value_len;
 
@@ -999,7 +999,7 @@ tBleStatus aci_gatt_write_long_charac_val(uint16_t conn_handle, uint16_t attr_ha
   struct hci_request rq;
   uint8_t status;
   gatt_write_long_charac_val_cp cp;
-  
+
   if(val_len > sizeof(cp.attr_val))
     return BLE_STATUS_INVALID_PARAMS;
 
@@ -1030,7 +1030,7 @@ tBleStatus aci_gatt_write_charac_reliable(uint16_t conn_handle, uint16_t attr_ha
   struct hci_request rq;
   uint8_t status;
   gatt_write_charac_reliable_cp cp;
-  
+
   if(val_len > sizeof(cp.attr_val))
     return BLE_STATUS_INVALID_PARAMS;
 
@@ -1061,7 +1061,7 @@ tBleStatus aci_gatt_write_long_charac_desc(uint16_t conn_handle, uint16_t attr_h
   struct hci_request rq;
   uint8_t status;
   gatt_write_charac_reliable_cp cp;
-  
+
   if(val_len > sizeof(cp.attr_val))
     return BLE_STATUS_INVALID_PARAMS;
 
@@ -1112,28 +1112,28 @@ tBleStatus aci_gatt_read_long_charac_desc(uint16_t conn_handle, uint16_t attr_ha
   return status;
 }
 
-tBleStatus aci_gatt_write_charac_descriptor(uint16_t conn_handle, uint16_t attr_handle, 
+tBleStatus aci_gatt_write_charac_descriptor(uint16_t conn_handle, uint16_t attr_handle,
 					   uint8_t value_len, uint8_t *attr_value)
 {
   struct hci_request rq;
   uint8_t status;
   uint8_t buffer[HCI_MAX_PAYLOAD_SIZE];
   uint8_t indx = 0;
-    
+
   if ((value_len+5) > HCI_MAX_PAYLOAD_SIZE)
     return BLE_STATUS_INVALID_PARAMS;
 
   conn_handle = htobs(conn_handle);
   Osal_MemCpy(buffer + indx, &conn_handle, 2);
   indx += 2;
-    
+
   attr_handle = htobs(attr_handle);
   Osal_MemCpy(buffer + indx, &attr_handle, 2);
   indx += 2;
 
   buffer[indx] = value_len;
   indx++;
-        
+
   Osal_MemCpy(buffer + indx, attr_value, value_len);
   indx +=  value_len;
 
@@ -1142,7 +1142,7 @@ tBleStatus aci_gatt_write_charac_descriptor(uint16_t conn_handle, uint16_t attr_
   rq.ocf = OCF_GATT_WRITE_CHAR_DESCRIPTOR;
   rq.cparam = (void *)buffer;
   rq.clen = indx;
-  rq.event = EVT_CMD_STATUS; 
+  rq.event = EVT_CMD_STATUS;
   rq.rparam = &status;
   rq.rlen = 1;
 
@@ -1182,7 +1182,7 @@ tBleStatus aci_gatt_write_without_response(uint16_t conn_handle, uint16_t attr_h
   struct hci_request rq;
   uint8_t status;
   gatt_write_without_resp_cp cp;
-  
+
   if(val_len > sizeof(cp.attr_val))
     return BLE_STATUS_INVALID_PARAMS;
 
@@ -1195,7 +1195,7 @@ tBleStatus aci_gatt_write_without_response(uint16_t conn_handle, uint16_t attr_h
   rq.ogf = OGF_VENDOR_CMD;
   rq.ocf = OCF_GATT_WRITE_WITHOUT_RESPONSE;
   rq.cparam = &cp;
-  rq.clen = GATT_WRITE_WITHOUT_RESPONSE_CP_SIZE + val_len; 
+  rq.clen = GATT_WRITE_WITHOUT_RESPONSE_CP_SIZE + val_len;
   rq.rparam = &status;
   rq.rlen = 1;
 
@@ -1211,7 +1211,7 @@ tBleStatus aci_gatt_signed_write_without_resp(uint16_t conn_handle, uint16_t att
   struct hci_request rq;
   uint8_t status;
   gatt_signed_write_without_resp_cp cp;
-  
+
   if(val_len > sizeof(cp.attr_val))
     return BLE_STATUS_INVALID_PARAMS;
 
@@ -1241,7 +1241,7 @@ tBleStatus aci_gatt_confirm_indication(uint16_t conn_handle)
   gatt_confirm_indication_cp cp;
 
   cp.conn_handle = htobs(conn_handle);
-  
+
   Osal_MemSet(&rq, 0, sizeof(rq));
   rq.ogf = OGF_VENDOR_CMD;
   rq.ocf = OCF_GATT_CONFIRM_INDICATION;
@@ -1252,7 +1252,7 @@ tBleStatus aci_gatt_confirm_indication(uint16_t conn_handle)
 
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-  
+
   return status;
 }
 
@@ -1267,27 +1267,27 @@ tBleStatus aci_gatt_write_response(uint16_t conn_handle,
   uint8_t status;
   uint8_t buffer[HCI_MAX_PAYLOAD_SIZE];
   uint8_t indx = 0;
-  
+
   if ((att_val_len+7) > HCI_MAX_PAYLOAD_SIZE)
     return BLE_STATUS_INVALID_PARAMS;
 
-  conn_handle = htobs(conn_handle);  
+  conn_handle = htobs(conn_handle);
   Osal_MemCpy(buffer + indx, &conn_handle, 2);
   indx += 2;
-    
+
   attr_handle = htobs(attr_handle);
   Osal_MemCpy(buffer + indx, &attr_handle, 2);
   indx += 2;
-    
+
   buffer[indx] = write_status;
   indx += 1;
-    
+
   buffer[indx] = err_code;
   indx += 1;
-    
+
   buffer[indx] = att_val_len;
   indx += 1;
-    
+
   Osal_MemCpy(buffer + indx, att_val, att_val_len);
   indx += att_val_len;
 
@@ -1314,7 +1314,7 @@ tBleStatus aci_gatt_allow_read(uint16_t conn_handle)
     struct hci_request rq;
     gatt_allow_read_cp cp;
     uint8_t status;
-    
+
     cp.conn_handle = htobs(conn_handle);
 
     Osal_MemSet(&rq, 0, sizeof(rq));
@@ -1337,7 +1337,7 @@ tBleStatus aci_gatt_set_security_permission(uint16_t service_handle, uint16_t at
     struct hci_request rq;
     gatt_set_security_permission_cp cp;
     uint8_t status;
-    
+
     cp.service_handle = htobs(service_handle);
     cp.attr_handle = htobs(attr_handle);
     cp.security_permission = security_permission;
@@ -1356,39 +1356,39 @@ tBleStatus aci_gatt_set_security_permission(uint16_t service_handle, uint16_t at
     return status;
 }
 
-tBleStatus aci_gatt_set_desc_value(uint16_t servHandle, 
+tBleStatus aci_gatt_set_desc_value(uint16_t servHandle,
 				   uint16_t charHandle,
 				   uint16_t charDescHandle,
 				   uint16_t charDescValOffset,
-				   uint8_t charDescValueLen,   
+				   uint8_t charDescValueLen,
                                    const void *charDescValue)
 {
   struct hci_request rq;
   uint8_t status;
   uint8_t buffer[HCI_MAX_PAYLOAD_SIZE];
   uint8_t indx = 0;
-    
+
   if ((charDescValueLen+9) > HCI_MAX_PAYLOAD_SIZE)
     return BLE_STATUS_INVALID_PARAMS;
 
   servHandle = htobs(servHandle);
   Osal_MemCpy(buffer + indx, &servHandle, 2);
   indx += 2;
-    
+
   charHandle = htobs(charHandle);
   Osal_MemCpy(buffer + indx, &charHandle, 2);
   indx += 2;
-    
+
   charDescHandle = htobs(charDescHandle);
   Osal_MemCpy(buffer + indx, &charDescHandle, 2);
   indx += 2;
-    
+
   Osal_MemCpy(buffer + indx, &charDescValOffset, 2);
   indx += 2;
-    
+
   buffer[indx] = charDescValueLen;
   indx++;
-        
+
   Osal_MemCpy(buffer + indx, charDescValue, charDescValueLen);
   indx +=  charDescValueLen;
 
@@ -1411,7 +1411,7 @@ tBleStatus aci_gatt_read_handle_value(uint16_t attr_handle, uint16_t data_len, u
   struct hci_request rq;
   gatt_read_handle_val_cp cp;
   gatt_read_handle_val_rp rp;
- 
+
   if(data_len > sizeof(rp.value))
     return BLE_STATUS_INVALID_PARAMS;
 
@@ -1427,7 +1427,7 @@ tBleStatus aci_gatt_read_handle_value(uint16_t attr_handle, uint16_t data_len, u
 
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-  
+
   if(rp.status)
     return rp.status;
 
@@ -1443,7 +1443,7 @@ tBleStatus aci_gatt_read_handle_value_offset_IDB05A1(uint16_t attr_handle, uint8
   struct hci_request rq;
   gatt_read_handle_val_offset_cp cp;
   gatt_read_handle_val_offset_rp rp;
-  
+
   if(data_len > sizeof(rp.value))
     return BLE_STATUS_INVALID_PARAMS;
 
@@ -1460,7 +1460,7 @@ tBleStatus aci_gatt_read_handle_value_offset_IDB05A1(uint16_t attr_handle, uint8
 
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-  
+
   if(rp.status)
     return rp.status;
 
@@ -1468,7 +1468,7 @@ tBleStatus aci_gatt_read_handle_value_offset_IDB05A1(uint16_t attr_handle, uint8
 
   Osal_MemCpy(data, rp.value, MIN(data_len, *data_len_out_p));
 
-  return 0; 
+  return 0;
 }
 
 tBleStatus aci_gatt_update_char_value_ext_IDB05A1(uint16_t service_handle, uint16_t char_handle,
@@ -1479,10 +1479,10 @@ tBleStatus aci_gatt_update_char_value_ext_IDB05A1(uint16_t service_handle, uint1
   struct hci_request rq;
   uint8_t status;
   gatt_upd_char_val_ext_cp cp;
-  
+
   if(value_length > sizeof(cp.value))
     return BLE_STATUS_INVALID_PARAMS;
-  
+
   cp.service_handle = htobs(service_handle);
   cp.char_handle = htobs(char_handle);
   cp.update_type = update_type;
@@ -1490,7 +1490,7 @@ tBleStatus aci_gatt_update_char_value_ext_IDB05A1(uint16_t service_handle, uint1
   cp.value_offset = htobs(value_offset);
   cp.value_length = value_length;
   Osal_MemCpy(cp.value, value, value_length);
-  
+
   Osal_MemSet(&rq, 0, sizeof(rq));
   rq.ogf = OGF_VENDOR_CMD;
   rq.ocf = OCF_GATT_UPD_CHAR_VAL_EXT;
@@ -1498,10 +1498,10 @@ tBleStatus aci_gatt_update_char_value_ext_IDB05A1(uint16_t service_handle, uint1
   rq.clen = GATT_UPD_CHAR_VAL_EXT_CP_SIZE + value_length;
   rq.rparam = &status;
   rq.rlen = 1;
-  
+
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-  
+
   return status;
 }
 

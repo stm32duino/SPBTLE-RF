@@ -26,7 +26,7 @@
 /** @defgroup ST
  *  @{
  */
- 
+
 /** @defgroup SimpleBlueNRG_HCI
  *  @{
  */
@@ -177,5 +177,5 @@
 /**
  * @}
  */
- 
+
 #endif /* __SM_H__ */

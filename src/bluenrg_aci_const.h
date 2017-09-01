@@ -208,7 +208,7 @@ typedef __packed struct _gap_authorization_response_cp{
 typedef __packed struct _gap_init_cp_IDB05A1{
     uint8_t	role;
     uint8_t	privacy_enabled;
-    uint8_t device_name_char_len; 
+    uint8_t device_name_char_len;
 } PACKED gap_init_cp_IDB05A1;
 #define GAP_INIT_CP_SIZE_IDB05A1 3
 
@@ -407,7 +407,7 @@ typedef __packed struct _gap_resolve_private_address_rp{
   uint8_t status;
   tBDAddr address;
 } PACKED gap_resolve_private_address_rp;
-  
+
 #define OCF_GAP_SET_BROADCAST_MODE   0x00A1
 #define GAP_SET_BROADCAST_MODE_CP_SIZE 6
 typedef __packed struct _gap_set_broadcast_mode_cp{
@@ -453,7 +453,7 @@ typedef __packed struct _gatt_add_serv_rp{
 #define OCF_GATT_INCLUDE_SERV		0x0103
 typedef __packed struct _gatt_include_serv_rp{
 	uint8_t		    status;
-    uint16_t		handle;    
+    uint16_t		handle;
 } PACKED gatt_include_serv_rp;
 #define GATT_INCLUDE_SERV_RP_SIZE 3
 
@@ -801,7 +801,7 @@ typedef __packed struct _l2cap_conn_param_update_resp_cp_IDB04A1{
 /** @defgroup ST
  *  @{
  */
- 
+
 /** @defgroup SimpleBlueNRG_HCI
  *  @{
  */
@@ -823,7 +823,7 @@ typedef __packed struct _evt_blue_aci{
 /**
  * @}
  */
- 
+
 /**
  * @}
  */

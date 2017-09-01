@@ -1,6 +1,6 @@
 /**
 ******************************************************************************
-* @file    osal.c 
+* @file    osal.c
 * @author  AMS - HEA&RF BU / CL
 * @version V1.0.0
 * @date    04-July-2014
@@ -35,26 +35,26 @@
   *
   ******************************************************************************
   */
-  
+
 /******************************************************************************
  * Includes
  *****************************************************************************/
 #include <string.h>
 #include <osal.h>
 #include <hal.h>
- 
+
  /**
  * Osal_MemCpy
- * 
+ *
  */
 void* Osal_MemCpy(void *dest, const void *src, unsigned int size)
 {
-    return(memcpy(dest,src,size)); 
+    return(memcpy(dest,src,size));
 }
 
 /**
  * Osal_MemSet
- * 
+ *
  */
 void* Osal_MemSet(void *ptr, int value, unsigned int size)
 {
@@ -63,6 +63,6 @@ void* Osal_MemSet(void *ptr, int value, unsigned int size)
 
 /******************************************************************************
  * local Functions
- *****************************************************************************/ 
- 
+ *****************************************************************************/
+
  /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

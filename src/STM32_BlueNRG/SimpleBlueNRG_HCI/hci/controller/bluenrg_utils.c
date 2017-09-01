@@ -60,7 +60,7 @@
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 
-/* This function calculates the CRC of a sector of flash, if bytes passed are less than sector size, 
+/* This function calculates the CRC of a sector of flash, if bytes passed are less than sector size,
    they are extended with 0xFF until sector size is reached
 */
 static uint32_t updater_calc_crc(const uint8_t* data, uint16_t nr_of_bytes)
@@ -71,7 +71,7 @@ static uint32_t updater_calc_crc(const uint8_t* data, uint16_t nr_of_bytes)
     crc = 0;
     for (i = 0; i < SECTOR_SIZE; i += 4) {
       uint8_t *dataw = (uint8_t *) &value;
-     
+
       dataw[0] = (i < nr_of_bytes) ? data[i] : 0xFF;
       dataw[1] = ((i + 1) < nr_of_bytes) ? data[i+1] : 0xFF;
       dataw[2] = ((i + 2) < nr_of_bytes) ? data[i+2] : 0xFF;
@@ -93,19 +93,19 @@ int program_device(const uint8_t *fw_image, uint32_t fw_size)
   uint32_t address;
   uint32_t crc, crc2, crc_size;
   uint32_t fw_offset = FW_OFFSET;
-  
+
   BlueNRG_HW_Bootloader();
   HCI_Process(); // To receive the EVT_INITIALIZED
 
   if(aci_get_updater_version(&version))
     return BLE_UTIL_ACI_ERROR;
-  
+
   if(version < SUPPORTED_BOOTLOADER_VERSION_MIN || version > SUPPORTED_BOOTLOADER_VERSION_MAX)
     return BLE_UTIL_UNSUPPORTED_VERSION;
-  
+
   if(aci_updater_hw_version(&version))
     return BLE_UTIL_ACI_ERROR;
-  
+
   if(version==0x31){
     // It does not contain bootloader inside first sector. It may contain code.
     fw_offset = FW_OFFSET_MS;
@@ -126,15 +126,15 @@ int program_device(const uint8_t *fw_image, uint32_t fw_size)
 
   /***********************************************************************
   * Erase and Program sectors
-  ************************************************************************/  
+  ************************************************************************/
   for(int i = fw_offset; i < fw_size; i += SECTOR_SIZE) {
     num_erase_retries = 0;
     while (num_erase_retries++ < MAX_ERASE_RETRIES) {
       aci_updater_erase_sector(BASE_ADDRESS + i);
       for (int j=i; ((j<i+SECTOR_SIZE)&&(j<fw_size)); j += write_block_size) {
-        
-        write_block_size = MIN(fw_size-j, MAX_WRITE_BLOCK_SIZE);	
-        
+
+        write_block_size = MIN(fw_size-j, MAX_WRITE_BLOCK_SIZE);
+
         RETRY_COMMAND(aci_updater_program_data_block(BASE_ADDRESS+j, write_block_size, fw_image+j), MAX_WRITE_RETRIES, status);
 	if (status != BLE_STATUS_SUCCESS)
 	  break;
@@ -145,7 +145,7 @@ int program_device(const uint8_t *fw_image, uint32_t fw_size)
     if (num_erase_retries == MAX_ERASE_RETRIES)
       return BLE_UTIL_ACI_ERROR;
   }
-  
+
   /***********************************************************************
   * Verify firmware
   ************************************************************************/
@@ -153,7 +153,7 @@ int program_device(const uint8_t *fw_image, uint32_t fw_size)
     address = BASE_ADDRESS + i;
     if(aci_updater_calc_crc(address, 1, &crc))
       return BLE_UTIL_ACI_ERROR;
-    
+
     crc_size = MIN(fw_size-i,SECTOR_SIZE);
 
     crc2 = updater_calc_crc(fw_image+i,crc_size);
@@ -167,10 +167,10 @@ int program_device(const uint8_t *fw_image, uint32_t fw_size)
   RETRY_COMMAND(aci_reset_blue_flag(), MAX_WRITE_RETRIES, status);
   if (status != BLE_STATUS_SUCCESS)
     return status;
-  
+
   BlueNRG_RST();
   HCI_Process(); // To receive the EVT_INITIALIZED
-  
+
   return BLE_STATUS_SUCCESS;
 }
 
@@ -178,15 +178,15 @@ int read_IFR(uint8_t *data)
 {
   uint8_t version, offset;
   tBleStatus ret;
-  
+
   offset = 0;
   aci_updater_start();
   if(aci_get_updater_version(&version))
     return BLE_UTIL_ACI_ERROR;
-  
+
   if(version < SUPPORTED_BOOTLOADER_VERSION_MIN || version > SUPPORTED_BOOTLOADER_VERSION_MAX)
     return BLE_UTIL_UNSUPPORTED_VERSION;
-  
+
   /***********************************************************************
   * Reading last 3 IFR 64-byte blocks
   ************************************************************************/
@@ -195,12 +195,12 @@ int read_IFR(uint8_t *data)
     offset += READ_BLOCK_SIZE;
     if(ret) return BLE_UTIL_ACI_ERROR;
   }
-  
+
   BlueNRG_RST();
   HCI_Process(); // To receive the EVT_INITIALIZED
 
   return BLE_STATUS_SUCCESS;
-  
+
 }
 
 void parse_IFR_data_config(const uint8_t data[64], IFR_config2_TypeDef *IFR_config)
@@ -211,7 +211,7 @@ void parse_IFR_data_config(const uint8_t data[64], IFR_config2_TypeDef *IFR_conf
   IFR_config->hs_startup_time = LE_TO_HOST_16(data+32);
   IFR_config->year = BCD_TO_INT(data[41]);
   IFR_config->month = BCD_TO_INT(data[42]);
-  IFR_config->day = BCD_TO_INT(data[43]);    
+  IFR_config->day = BCD_TO_INT(data[43]);
 }
 
 int IFR_validate(IFR_config2_TypeDef *IFR_config)
@@ -230,7 +230,7 @@ int IFR_validate(IFR_config2_TypeDef *IFR_config)
     return BLE_UTIL_PARSE_ERROR; // Invalid date
   if(IFR_config->month > 12 || IFR_config->month < 1)
     return BLE_UTIL_PARSE_ERROR; // Invalid date
-  
+
   return BLE_STATUS_SUCCESS;
 }
 
@@ -241,7 +241,7 @@ void change_IFR_data_config(IFR_config2_TypeDef *IFR_config, uint8_t data[64])
   data[0] = IFR_config->stack_mode;
   HOST_TO_LE_16(data+28, IFR_config->slave_sca_ppm);
   data[30] = IFR_config->master_sca;
-  HOST_TO_LE_16(data+32, IFR_config->hs_startup_time);  
+  HOST_TO_LE_16(data+32, IFR_config->hs_startup_time);
   data[41] = INT_TO_BCD(IFR_config->year);
   data[42] = INT_TO_BCD(IFR_config->month);
   data[43] = INT_TO_BCD(IFR_config->day);
@@ -259,23 +259,23 @@ int program_IFR(const IFR_config_TypeDef *ifr_image)
 #endif
   uint8_t hwVersion;
   uint16_t fwVersion;
-    
+
   if(getBlueNRGVersion(&hwVersion, &fwVersion))
     return BLE_UTIL_ACI_ERROR;
-  
+
   BlueNRG_HW_Bootloader();
   HCI_Process(); // To receive the EVT_INITIALIZED
-  
+
   if(aci_get_updater_version(&version))
     return BLE_UTIL_ACI_ERROR;
-  
+
   if(version < SUPPORTED_BOOTLOADER_VERSION_MIN || version > SUPPORTED_BOOTLOADER_VERSION_MAX)
     return BLE_UTIL_UNSUPPORTED_VERSION;
-  
+
 #ifndef BLUENRG_MS
     /***********************************************************************
    * READ IFR data
-   ************************************************************************/  
+   ************************************************************************/
   for(int i = 0; i < SECTOR_SIZE; i += READ_BLOCK_SIZE){
     ret = aci_updater_read_data_block(IFR_BASE_ADDRESS+i, READ_BLOCK_SIZE, ifr_data+i);
     if(ret != BLE_STATUS_SUCCESS){
@@ -283,11 +283,11 @@ int program_IFR(const IFR_config_TypeDef *ifr_image)
     }
   }
 #endif
-  
+
   /***********************************************************************
   * Erase & Flashing IFR sectors
   ************************************************************************/
-#ifndef BLUENRG_MS  
+#ifndef BLUENRG_MS
   Osal_MemCpy(&ifr_data[SECTOR_SIZE-IFR_SIZE], ifr_image, IFR_SIZE);
 #endif
   num_erase_retries = 0;
@@ -306,7 +306,7 @@ int program_IFR(const IFR_config_TypeDef *ifr_image)
 
   /***********************************************************************
   * Verify IFR
-  ************************************************************************/  
+  ************************************************************************/
   {
     uint8_t ifr_updated[READ_BLOCK_SIZE];
     for(int i = IFR_WRITE_OFFSET_BEGIN, j = 0; i < SECTOR_SIZE; i += READ_BLOCK_SIZE, j += READ_BLOCK_SIZE){
@@ -321,7 +321,7 @@ int program_IFR(const IFR_config_TypeDef *ifr_image)
 
   BlueNRG_RST();
   HCI_Process(); // To receive the EVT_INITIALIZED
-    
+
   return BLE_STATUS_SUCCESS;
 }
 
@@ -329,7 +329,7 @@ uint8_t verify_IFR(const IFR_config_TypeDef *ifr_data)
 {
   uint8_t ifr_updated[READ_BLOCK_SIZE];
   uint8_t version, ret = BLE_STATUS_SUCCESS;
-    
+
   aci_updater_start();
   if(aci_get_updater_version(&version))
     return BLE_UTIL_ACI_ERROR;
@@ -347,7 +347,7 @@ uint8_t verify_IFR(const IFR_config_TypeDef *ifr_data)
 
   BlueNRG_RST();
   HCI_Process(); // To receive the EVT_INITIALIZED
-  
+
   return ret;
 }
 
@@ -357,7 +357,7 @@ uint8_t getBlueNRGVersion(uint8_t *hwVersion, uint16_t *fwVersion)
   uint8_t hci_version, lmp_pal_version;
   uint16_t hci_revision, manufacturer_name, lmp_pal_subversion;
 
-  status = hci_le_read_local_version(&hci_version, &hci_revision, &lmp_pal_version, 
+  status = hci_le_read_local_version(&hci_version, &hci_revision, &lmp_pal_version,
 				     &manufacturer_name, &lmp_pal_subversion);
 
   if (status == BLE_STATUS_SUCCESS) {
@@ -378,7 +378,7 @@ uint8_t getBlueNRGUpdaterVersion(uint8_t *version)
 
   if(aci_get_updater_version(version))
     return BLE_UTIL_ACI_ERROR;
-  
+
   if(*version < SUPPORTED_BOOTLOADER_VERSION_MIN || *version > SUPPORTED_BOOTLOADER_VERSION_MAX)
     return BLE_UTIL_UNSUPPORTED_VERSION;
 

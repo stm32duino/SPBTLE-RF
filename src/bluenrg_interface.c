@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    bluenrg_interface.h 
+  * @file    bluenrg_interface.h
   * @author  MCD Application Team
   * @version V1.0.0
   * @date    04-July-2014

@@ -29,12 +29,12 @@
  *
  */
 struct timer {
-    
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    
+
   tClockTime start;
   tClockTime interval;
-  
+
 #endif
 };
 
@@ -53,24 +53,24 @@ void Timer_Set(struct timer *t, tClockTime interval);
 
 /**
  * Timer_Reset
- * 
+ *
  * @param[in] t     Pointer to a timer structure
- * 
+ *
  * This function resets the timer with the same interval given
  * with Timer_Set, starting from the time it previously expired.
- * 
- */ 
+ *
+ */
 void Timer_Reset(struct timer *t);
 
 /**
  * Timer_Restart
- * 
+ *
  * @param[in]  t   Pointer to a timer structure
- * 
+ *
  * This function resets the timer with the same interval given
  * with Timer_Set, starting from the current time.
- * 
- */ 
+ *
+ */
 void Timer_Restart(struct timer *t);
 
 /**

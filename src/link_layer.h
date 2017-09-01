@@ -27,11 +27,11 @@
 /** @defgroup ST
  *  @{
  */
- 
+
 /** @defgroup SimpleBlueNRG_HCI
  *  @{
  */
- 
+
 /**
  *@addtogroup GAP GAP
  *@brief API for GAP layer.
@@ -39,8 +39,8 @@
  */
 
 /**
- *@name Advertising filter 
- *Advertising policy for filtering (white list related) 
+ *@name Advertising filter
+ *Advertising policy for filtering (white list related)
  *@{
  */
 #define NO_WHITE_LIST_USE           (0x00)  /**< Process scan and connection requests from all devices (i.e., the White List is not in use) */
@@ -71,7 +71,7 @@ typedef	uint8_t	tBDAddr[6];
 /**
  * @}
  */
-   
+
 /**
  *@name Directed advertising types
  * Type of advertising during directed advertising
@@ -83,17 +83,17 @@ typedef	uint8_t	tBDAddr[6];
  * @}
  */
 
-/** 
+/**
  * @name Advertising type
  * @{
  */
 
 /**
- * undirected scannable and connectable 
- */ 
+ * undirected scannable and connectable
+ */
 #define ADV_IND         (0x00)
 
-/** 
+/**
  * directed non scannable
  */
 #define ADV_DIRECT_IND  (0x01)
@@ -109,7 +109,7 @@ typedef	uint8_t	tBDAddr[6];
 #define ADV_NONCONN_IND (0x03)
 
 /**
- * scan response 
+ * scan response
  */
 #define SCAN_RSP        (0x04)
 
@@ -124,17 +124,17 @@ typedef	uint8_t	tBDAddr[6];
  * @{
  */
 
-/** 
+/**
  * lowest allowed interval value for connectable types(20ms)..multiple of 625us
  */
 #define ADV_INTERVAL_LOWEST_CONN    (0X0020)
 
-/** 
+/**
  * highest allowed interval value (10.24s)..multiple of 625us.
  */
 #define ADV_INTERVAL_HIGHEST        (0X4000)
 
-/** 
+/**
  * lowest allowed interval value for non connectable types
  * (100ms)..multiple of 625us.
  */
@@ -168,7 +168,7 @@ typedef	uint8_t	tBDAddr[6];
 /**
  * @}
  */
- 
+
 /**
  * @}
  */

@@ -51,8 +51,8 @@ tBleStatus aci_l2cap_connection_parameter_update_request(uint16_t conn_handle, u
 
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-  
-  return status;  
+
+  return status;
 }
 
 tBleStatus aci_l2cap_connection_parameter_update_response_IDB05A1(uint16_t conn_handle, uint16_t interval_min,

@@ -4,7 +4,7 @@
   * @author  CL
   * @version V1.0.0
   * @date    04-July-2014
-  * @brief   
+  * @brief
   ******************************************************************************
   * @attention
   *
@@ -33,8 +33,8 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */ 
-  
+  */
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __BLUENRG_INTERFACE_H_
 #define __BLUENRG_INTERFACE_H_

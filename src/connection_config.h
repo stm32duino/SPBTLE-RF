@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    connection_config.h 
+  * @file    connection_config.h
   * @author  CL
   * @version V1.0.0
   * @date    04-July-2014
@@ -46,8 +46,8 @@
 /** @addtogroup SensorDemo
  *  @{
  */
- 
-/** @defgroup CONNECTION_CONFIG 
+
+/** @defgroup CONNECTION_CONFIG
  * @{
  */
 
@@ -58,7 +58,7 @@
 #define SCAN_P (0x4000)
 #define SCAN_L (0x4000)
 
-/** 
+/**
  * @brief Supervision timeout, arg in msec.
  */
 //#define SUPERV_TIMEOUT (60)
@@ -71,22 +71,22 @@
  *  @{
  */
 /* Exported macros -----------------------------------------------------------*/
-/** 
+/**
  * @brief Connection period, arg in msec.
  */
 #define CONN_P(x) ((int)((x)/1.25f))
-/** 
+/**
  * @brief Connection length, arg in msec.
  */
 #define CONN_L(x) ((int)((x)/0.625f))
 
-//#define CONN_P1		(CONN_P(10)) 
-//#define CONN_P2		(CONN_P(10)) 
-#define CONN_P1		(CONN_P(1000)) 
-#define CONN_P2		(CONN_P(1000)) 
+//#define CONN_P1		(CONN_P(10))
+//#define CONN_P2		(CONN_P(10))
+#define CONN_P1		(CONN_P(1000))
+#define CONN_P2		(CONN_P(1000))
 
 #define CONN_L1		(CONN_L(5))
-#define CONN_L2		(CONN_L(5)) 
+#define CONN_L2		(CONN_L(5))
 /**
  * @}
  */
@@ -94,15 +94,15 @@
 /**
  * @}
  */
- 
+
 /**
  * @}
  */
- 
+
 /**
  * @}
  */
- 
+
 #endif /* _CONNECTION_CONFIG_ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

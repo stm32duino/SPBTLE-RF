@@ -21,7 +21,7 @@
 
 typedef uint32_t tClockTime;
 #define CLOCK_SECOND 1000
-#define Clock_Init() 
+#define Clock_Init()
 #define Clock_Time HAL_GetTick
 #define Clock_Wait HAL_Delay
 

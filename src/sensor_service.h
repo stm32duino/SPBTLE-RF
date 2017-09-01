@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    sensor_service.h 
+  * @file    sensor_service.h
   * @author  CL
   * @version V1.0.0
   * @date    04-July-2014
-  * @brief   
+  * @brief
   ******************************************************************************
   * @attention
   *
@@ -34,14 +34,14 @@
   *
   ******************************************************************************
   */
-  
-/* Define to prevent recursive inclusion -------------------------------------*/  
+
+/* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef _SENSOR_SERVICE_H_
 #define _SENSOR_SERVICE_H_
 
 #ifdef __cplusplus
  extern "C" {
-#endif 
+#endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "cube_hal.h"
@@ -54,7 +54,7 @@
 #include "hci_const.h"
 #include "gp_timer.h"
 #include "bluenrg_hal_aci.h"
-#include "bluenrg_aci_const.h"   
+#include "bluenrg_aci_const.h"
 #include "hci.h"
 #include "hci_le.h"
 #include "hal.h"
@@ -70,15 +70,15 @@
 /** @addtogroup SensorDemo
  *  @{
  */
- 
-/** @addtogroup SENSOR_SERVICE 
+
+/** @addtogroup SENSOR_SERVICE
  * @{
  */
 
-/** @addtogroup SENSOR_SERVICE_Exported_Defines 
+/** @addtogroup SENSOR_SERVICE_Exported_Defines
  * @{
  */
-/* Exported defines ----------------------------------------------------------*/   
+/* Exported defines ----------------------------------------------------------*/
 #define IDB04A1 0
 #define IDB05A1 1
 
@@ -100,7 +100,7 @@
  */
 typedef int i32_t;
 
-/** 
+/**
  * @brief Structure containing acceleration value (in mg) of each axis.
  */
 typedef struct {
@@ -141,7 +141,7 @@ void       HCI_Event_CB(void *pckt);
 /**
  * @}
  */
- 
+
 /**
  * @}
  */

@@ -23,11 +23,11 @@
 /** @defgroup ST
  *  @{
  */
- 
+
 /** @defgroup SimpleBlueNRG_HCI
  *  @{
  */
- 
+
 /**
  *@addtogroup L2CAP L2CAP
  *@brief L2CAP layer.
@@ -103,7 +103,7 @@ tBleStatus aci_l2cap_connection_parameter_update_response_IDB04A1(uint16_t conn_
 /**
  * @}
  */
-   
+
 /**
  * @defgroup L2CAP_Events L2CAP events
  * @{
@@ -152,14 +152,14 @@ typedef __packed struct _evt_l2cap_conn_upd_req{
  * The same handle has to be returned while responding to the event with the command
  * aci_l2cap_connection_parameter_update_response().
  */
-  uint16_t conn_handle; 
+  uint16_t conn_handle;
   uint8_t  event_data_length; /**< Length of following data. */
 /**
  * This is the identifier which associates the request to the
  * response. The same identifier has to be returned by the upper
  * layer in the command aci_l2cap_connection_parameter_update_response().
  */
-  uint8_t  identifier; 
+  uint8_t  identifier;
   uint16_t l2cap_length;  /**< Length of the L2CAP connection update request. */
   uint16_t interval_min;  /**< Value as defined in Bluetooth 4.0 spec, Volume 3, Part A 4.20. */
   uint16_t interval_max;  /**< Value as defined in Bluetooth 4.0 spec, Volume 3, Part A 4.20. */

@@ -4,7 +4,7 @@
   * @author  CL
   * @version V1.0.0
   * @date    04-July-2014
-  * @brief   
+  * @brief
   ******************************************************************************
   * @attention
   *
@@ -33,17 +33,17 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */ 
-  
+  */
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32_BLUENRG_BLE_H
 #define __STM32_BLUENRG_BLE_H
 
 #ifdef __cplusplus
  extern "C" {
-#endif 
+#endif
 
-/* Includes ------------------------------------------------------------------*/ 
+/* Includes ------------------------------------------------------------------*/
 #ifdef USE_STM32F4XX_NUCLEO
   #include "stm32f4xx_hal.h"
   #include "stm32f4xx_nucleo.h"
@@ -51,7 +51,7 @@
   #define SYSCLK_FREQ 84000000
   #define SYSCLK_FREQ_SLEEP 32000
 #endif
-   
+
 #ifdef USE_STM32L0XX_NUCLEO
   #include "stm32l0xx_hal.h"
   #include "stm32l0xx_nucleo.h"
@@ -75,15 +75,15 @@
 /** @addtogroup X-NUCLEO-IDB0xA1
  *  @{
  */
- 
+
 /** @addtogroup STM32_BLUENRG_BLE
  *  @{
  */
 
-/** @defgroup STM32_BLUENRG_BLE_Exported_Functions 
+/** @defgroup STM32_BLUENRG_BLE_Exported_Functions
  * @{
  */
-  
+
 // FIXME: add prototypes for BlueNRG here
 void BNRG_SPI_Init(void);
 void BlueNRG_RST(void);
@@ -115,16 +115,16 @@ HAL_StatusTypeDef HAL_SPI_Receive_Opt(uint8_t *pRxData, uint8_t Size);
 /**
  * @}
  */
- 
+
 /**
  * @}
  */
- 
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* __STM32_BLUENRG_BLE_H */
-    
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 

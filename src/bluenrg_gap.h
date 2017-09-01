@@ -3,7 +3,7 @@
 * Author             : AMS - HEA&RF BU
 * Version            : V1.0.0
 * Date               : 19-July-2012
-* Description        : Header file for BlueNRG's GAP layer. 
+* Description        : Header file for BlueNRG's GAP layer.
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
@@ -24,7 +24,7 @@
 /** @defgroup ST
  *  @{
  */
- 
+
 /** @defgroup SimpleBlueNRG_HCI
  *  @{
  */
@@ -141,7 +141,7 @@
  */
 
 /* service data AD type */
-#define AD_TYPE_SERVICE_DATA					(0x16)	
+#define AD_TYPE_SERVICE_DATA					(0x16)
 
 /* manufaturer specific data AD type */
 #define AD_TYPE_MANUFACTURER_SPECIFIC_DATA		(0xFF)
@@ -235,7 +235,7 @@
 /**
  * @}
  */
- 
+
 /**
  * @}
  */
@@ -243,7 +243,7 @@
 /**
  * @}
  */
-   
+
 /**
  * @}
  */

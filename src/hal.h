@@ -47,7 +47,7 @@
                                            *((uint8_t *)ptr)) << 8 | \
                                           ((uint16_t) \
                                            *((uint8_t *)ptr + 1) ) )
-											
+
 /* Store Value into a buffer in Little Endian Format */
 #define HOST_TO_LE_16(buf, val)    ( ((buf)[0] =  (uint8_t) (val)    ) , \
                                    ((buf)[1] =  (uint8_t) (val>>8) ) )
@@ -55,7 +55,7 @@
 #define HOST_TO_LE_32(buf, val)    ( ((buf)[0] =  (uint8_t) (val)     ) , \
                                    ((buf)[1] =  (uint8_t) (val>>8)  ) , \
                                    ((buf)[2] =  (uint8_t) (val>>16) ) , \
-                                   ((buf)[3] =  (uint8_t) (val>>24) ) ) 
+                                   ((buf)[3] =  (uint8_t) (val>>24) ) )
 
 
 /* Store Value into a buffer in Big Endian Format */
@@ -69,7 +69,7 @@
                                 __disable_interrupt(); \
 /* Must be called in the same or in a lower scope of SUSPEND_INTERRUPTS */
 #define ATOMIC_SECTION_END() __set_PRIMASK(uwPRIMASK_Bit)
- 
+
 /******************************************************************************
  * Types
  *****************************************************************************/

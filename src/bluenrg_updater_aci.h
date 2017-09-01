@@ -25,11 +25,11 @@
 /** @defgroup ST
  *  @{
  */
- 
+
 /** @defgroup SimpleBlueNRG_HCI
  *  @{
  */
- 
+
 /**
  * @defgroup Updater Updater
  * @brief Updater.

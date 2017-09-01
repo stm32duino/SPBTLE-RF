@@ -26,11 +26,11 @@
 /** @defgroup ST
  *  @{
  */
- 
+
 /** @defgroup SimpleBlueNRG_HCI
  *  @{
  */
- 
+
 /**
  *@addtogroup GATT GATT
  *@{
@@ -65,7 +65,7 @@
  * @{
  */
 #define ATTR_NO_ACCESS                             (0x00)
-#define ATTR_ACCESS_READ_ONLY                      (0x01) 
+#define ATTR_ACCESS_READ_ONLY                      (0x01)
 #define ATTR_ACCESS_WRITE_REQ_ONLY                 (0x02)
 #define ATTR_ACCESS_READ_WRITE                     (0x03)
 #define ATTR_ACCESS_WRITE_WITHOUT_RESPONSE         (0x04)
@@ -152,7 +152,7 @@
  * @}
  */
 
-/** 
+/**
  * @name Type of characteristic length
  * See aci_gatt_add_char()
  * @{

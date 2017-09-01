@@ -44,7 +44,7 @@
 
 typedef uint8_t BOOL;
 
-#ifndef TRUE 
+#ifndef TRUE
 #define TRUE (1)
 #endif
 
@@ -54,5 +54,5 @@ typedef uint8_t BOOL;
 
 
 
-#endif /* __HAL_TYPES_H__ */ 
+#endif /* __HAL_TYPES_H__ */
 

@@ -38,7 +38,7 @@ tBleStatus aci_updater_start(void)
 
   hci_send_req(&rq, FALSE); // No command complete is sent.
 
-  return status;  
+  return status;
 }
 
 tBleStatus aci_updater_reboot(void)
@@ -72,7 +72,7 @@ tBleStatus aci_get_updater_version(uint8_t *version)
 
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-    
+
   *version = resp.version;
 
   return resp.status;
@@ -93,7 +93,7 @@ tBleStatus aci_get_updater_buffer_size(uint8_t *buffer_size)
 
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-    
+
   *buffer_size = resp.buffer_size;
 
   return resp.status;
@@ -113,7 +113,7 @@ tBleStatus aci_erase_blue_flag(void)
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
 
-  return status;  
+  return status;
 }
 
 tBleStatus aci_reset_blue_flag(void)
@@ -130,15 +130,15 @@ tBleStatus aci_reset_blue_flag(void)
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
 
-  return status;  
+  return status;
 }
 
 tBleStatus aci_updater_erase_sector(uint32_t address)
 {
   struct hci_request rq;
-  updater_erase_sector_cp cp;    
+  updater_erase_sector_cp cp;
   uint8_t status;
-    
+
   cp.address = htobl(address);
 
   Osal_MemSet(&rq, 0, sizeof(rq));
@@ -155,19 +155,19 @@ tBleStatus aci_updater_erase_sector(uint32_t address)
   return status;
 }
 
-tBleStatus aci_updater_program_data_block(uint32_t address, 
+tBleStatus aci_updater_program_data_block(uint32_t address,
 				   uint16_t len,
 				   const uint8_t *data)
 {
   struct hci_request rq;
   uint8_t status;
   updater_prog_data_block_cp cp;
-    
+
   if( len > sizeof(cp.data))
     return BLE_STATUS_INVALID_PARAMS;
-  
+
   cp.address = htobl(address);
-  cp.data_len = htobs(len);        
+  cp.data_len = htobs(len);
   Osal_MemCpy(cp.data, data, len);
 
   Osal_MemSet(&rq, 0, sizeof(rq));
@@ -180,7 +180,7 @@ tBleStatus aci_updater_program_data_block(uint32_t address,
 
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-    
+
   return status;
 }
 
@@ -191,10 +191,10 @@ tBleStatus aci_updater_read_data_block(uint32_t address,
   struct hci_request rq;
   updater_read_data_block_cp cp;
   uint8_t buffer[HCI_MAX_PAYLOAD_SIZE];
-    
+
   if((data_len+1) > HCI_MAX_PAYLOAD_SIZE)
     return BLE_STATUS_INVALID_PARAMS;
-    
+
   cp.address = htobl(address);
   cp.data_len = htobs(data_len);
 
@@ -208,7 +208,7 @@ tBleStatus aci_updater_read_data_block(uint32_t address,
 
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-    
+
   // First byte is status
   Osal_MemCpy(data, buffer+1, data_len);
 
@@ -222,9 +222,9 @@ tBleStatus aci_updater_calc_crc(uint32_t address,
   struct hci_request rq;
   updater_calc_crc_cp cp;
   updater_calc_crc_rp resp;
-    
+
   Osal_MemSet(&resp, 0, sizeof(resp));
-    
+
   cp.address = htobl(address);
   cp.num_sectors = num_sectors;
 
@@ -238,9 +238,9 @@ tBleStatus aci_updater_calc_crc(uint32_t address,
 
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-    
+
   *crc = btohl(resp.crc);
-    
+
   return resp.status;
 }
 
@@ -259,7 +259,7 @@ tBleStatus aci_updater_hw_version(uint8_t *version)
 
   if (hci_send_req(&rq, FALSE) < 0)
     return BLE_STATUS_TIMEOUT;
-    
+
   *version = resp.version;
 
   return resp.status;

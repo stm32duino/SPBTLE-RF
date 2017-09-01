@@ -35,11 +35,11 @@
 /** @defgroup ST
  *  @{
  */
- 
+
 /** @defgroup SimpleBlueNRG_HCI
  *  @{
  */
- 
+
 /*** Data types ***/
 
 /* structure used to read received data */
@@ -99,13 +99,13 @@ void HCI_Process(void);
 /**
  * @brief Check if queue of HCI event is empty or not.
  * @note This funtion can be used to check if the event queue from BlueNRG is empty. This
- *        is useful when checking if it is safe to go to sleep. 
+ *        is useful when checking if it is safe to go to sleep.
  * @return TRUE if event queue is empty. FALSE otherwhise.
  */
 BOOL HCI_Queue_Empty(void);
 /**
- * Iterrupt service routine that must be called when the BlueNRG 
- * reports a packet received or an event to the host through the 
+ * Iterrupt service routine that must be called when the BlueNRG
+ * reports a packet received or an event to the host through the
  * BlueNRG interrupt line.
  */
 #ifdef __DMA_LP__
@@ -133,5 +133,5 @@ extern tListNode hciReadPktRxQueue;
 /**
  * @}
  */
- 
+
 #endif /* __HCI_H_ */
