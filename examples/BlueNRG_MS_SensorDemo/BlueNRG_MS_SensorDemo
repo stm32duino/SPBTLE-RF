@@ -1,9 +1,9 @@
 /*
 
- DISCO_IOT_SensorDemo
+ BlueNRG_MS_SensorDemo
 
- This sketch provides a default example how to use the BLE module of the
- Discovery L475VG IoT board.
+ This sketch provides a default example how to use the X_NUCLEO_IDB05A1
+ (BlueNRG-MS expansion board) on top of an STM32 Nucleo board.
 
  For the Sensor Service sketch, 3 services are started : Acc, Environnemental and Time.
  For testing the sketch, you can download on the playstore the "BlueNRG"
