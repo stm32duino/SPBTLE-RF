@@ -28,10 +28,10 @@
   MISO: PC11
   SCLK: PC10
   */
-SPIClass SPI_3(44, 43, 42);
+SPIClass SPI_3(PC12, PC11, PC10);
 
 // Configure BTLE pins
-SPBTLERFClass BTLE(&SPI_3, 50, 57, 31, LED4);
+SPBTLERFClass BTLE(&SPI_3, PD13, PE6, PA8, LED4);
 
 const char *name = "BlueNRG";
 uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
