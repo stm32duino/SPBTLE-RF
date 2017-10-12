@@ -1,9 +1,10 @@
 /*
 
- DISCO_IOT_BeaconDemo
+ SPBTLE_BeaconDemo
 
- This sketch provides a default example how to use the BLE module of the
- Discovery L475VG IoT board.
+ This sketch provides a default example how to use BLE with:
+  - Discovery L475VG IoT board
+  - X_NUCLEO_IDB05A1 (BlueNRG-MS expansion board) on top of an STM32 Nucleo board
 
  For the Beacon Service, two modes are supported:
  - UID mode, you can choose the Namespace and the ID. This data are sent
@@ -24,20 +25,41 @@
 
 */
 
-
 #include <SPI.h>
 #include <SPBTLE_RF.h>
 #include <beacon_service.h>
 
-/* Configure SPI3
-  MOSI: PC12
-  MISO: PC11
-  SCLK: PC10
-  */
-SPIClass SPI_3(PC12, PC11, PC10);
+/* Please uncomment one of the following config depending on board used */
+/* Discovery L475VG */
+/*
+#define PIN_SPI_MOSI   (PC12)
+#define PIN_SPI_MISO   (PC11)
+#define PIN_SPI_SCK    (PC10)
+
+#define PIN_SPI_nCS    (PD13)
+#define PIN_SPI_RESET  (PA8)
+#define PIN_SPI_IRQ    (PE6)
+
+#define PIN_BLE_LED    (LED4)
+*/
+/* X_NUCLEO_IDB05A1 */
+/*
+#define PIN_SPI_MOSI   (11)
+#define PIN_SPI_MISO   (12)
+#define PIN_SPI_SCK    (3)
+
+#define PIN_SPI_nCS    (A1)
+#define PIN_SPI_RESET  (7)
+#define PIN_SPI_IRQ    (A0)
+
+#define PIN_BLE_LED    (0xFF)
+*/
+
+// Configure BTLE_SPI
+SPIClass BTLE_SPI(PIN_SPI_MOSI, PIN_SPI_MISO, PIN_SPI_SCK);
 
 // Configure BTLE pins
-SPBTLERFClass BTLE(&SPI_3, PD13, PE6, PA8, LED4);
+SPBTLERFClass BTLE(&BTLE_SPI, PIN_SPI_nCS, PIN_SPI_IRQ, PIN_SPI_RESET, PIN_BLE_LED);
 
 // Mac address
 uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
@@ -47,7 +69,7 @@ uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
 
 #ifdef USE_UID_MODE
 // Beacon ID, the 6 last bytes are used for NameSpace
-uint8_t NameSpace[] = "DISCO_IOT";
+uint8_t NameSpace[] = "ST BTLE";
 uint8_t beaconID[] = {0x1, 0x2, 0x3, 0x4, 0x5, 0x6};
 #else
 char url[] = "www.st.com";

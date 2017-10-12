@@ -1,9 +1,10 @@
 /*
 
- DISCO_IOT_SensorDemo
+ SPBTLE_SensorDemo
 
- This sketch provides a default example how to use the BLE module of the
- Discovery L475VG IoT board.
+ This sketch provides a default example how to use BLE with:
+  - Discovery L475VG IoT board
+  - X_NUCLEO_IDB05A1 (BlueNRG-MS expansion board) on top of an STM32 Nucleo board
 
  For the Sensor Service sketch, 3 services are started : Acc, Environnemental and Time.
  For testing the sketch, you can download on the playstore the "BlueNRG"
@@ -23,15 +24,37 @@
 #include <SPBTLE_RF.h>
 #include <sensor_service.h>
 
-/* Configure SPI3
-  MOSI: PC12
-  MISO: PC11
-  SCLK: PC10
-  */
-SPIClass SPI_3(PC12, PC11, PC10);
+/* Please uncomment one of the following config depending on board used */
+/* Discovery L475VG */
+/*
+#define PIN_SPI_MOSI   (PC12)
+#define PIN_SPI_MISO   (PC11)
+#define PIN_SPI_SCK    (PC10)
+
+#define PIN_SPI_nCS    (PD13)
+#define PIN_SPI_RESET  (PA8)
+#define PIN_SPI_IRQ    (PE6)
+
+#define PIN_BLE_LED    (LED4)
+*/
+/* X_NUCLEO_IDB05A1 */
+/*
+#define PIN_SPI_MOSI   (11)
+#define PIN_SPI_MISO   (12)
+#define PIN_SPI_SCK    (3)
+
+#define PIN_SPI_nCS    (A1)
+#define PIN_SPI_RESET  (7)
+#define PIN_SPI_IRQ    (A0)
+
+#define PIN_BLE_LED    (0xFF)
+*/
+
+// Configure BTLE_SPI
+SPIClass BTLE_SPI(PIN_SPI_MOSI, PIN_SPI_MISO, PIN_SPI_SCK);
 
 // Configure BTLE pins
-SPBTLERFClass BTLE(&SPI_3, PD13, PE6, PA8, LED4);
+SPBTLERFClass BTLE(&BTLE_SPI, PIN_SPI_nCS, PIN_SPI_IRQ, PIN_SPI_RESET, PIN_BLE_LED);
 
 const char *name = "BlueNRG";
 uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
