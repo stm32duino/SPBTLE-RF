@@ -4,7 +4,6 @@
 
  This sketch provides a default example how to use BLE with:
   - Discovery L475VG IoT board
-  - X_NUCLEO_IDB05A1 (BlueNRG-MS expansion board) on top of an STM32 Nucleo board
 
  For the Beacon Service, two modes are supported:
  - UID mode, you can choose the Namespace and the ID. This data are sent
@@ -29,9 +28,6 @@
 #include <SPBTLE_RF.h>
 #include <beacon_service.h>
 
-/* Please uncomment one of the following config depending on board used */
-/* Discovery L475VG */
-/*
 #define PIN_SPI_MOSI   (PC12)
 #define PIN_SPI_MISO   (PC11)
 #define PIN_SPI_SCK    (PC10)
@@ -41,19 +37,6 @@
 #define PIN_SPI_IRQ    (PE6)
 
 #define PIN_BLE_LED    (LED4)
-*/
-/* X_NUCLEO_IDB05A1 */
-/*
-#define PIN_SPI_MOSI   (11)
-#define PIN_SPI_MISO   (12)
-#define PIN_SPI_SCK    (3)
-
-#define PIN_SPI_nCS    (A1)
-#define PIN_SPI_RESET  (7)
-#define PIN_SPI_IRQ    (A0)
-
-#define PIN_BLE_LED    (0xFF)
-*/
 
 // Configure BTLE_SPI
 SPIClass BTLE_SPI(PIN_SPI_MOSI, PIN_SPI_MISO, PIN_SPI_SCK);
