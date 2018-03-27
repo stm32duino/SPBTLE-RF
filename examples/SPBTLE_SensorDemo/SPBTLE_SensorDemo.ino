@@ -23,21 +23,21 @@
 #include <SPBTLE_RF.h>
 #include <sensor_service.h>
 
-#define PIN_SPI_MOSI   (PC12)
-#define PIN_SPI_MISO   (PC11)
-#define PIN_SPI_SCK    (PC10)
+#define PIN_BLE_SPI_MOSI   (PC12)
+#define PIN_BLE_SPI_MISO   (PC11)
+#define PIN_BLE_SPI_SCK    (PC10)
 
-#define PIN_SPI_nCS    (PD13)
-#define PIN_SPI_RESET  (PA8)
-#define PIN_SPI_IRQ    (PE6)
+#define PIN_BLE_SPI_nCS    (PD13)
+#define PIN_BLE_SPI_RESET  (PA8)
+#define PIN_BLE_SPI_IRQ    (PE6)
 
 #define PIN_BLE_LED    (LED4)
 
 // Configure BTLE_SPI
-SPIClass BTLE_SPI(PIN_SPI_MOSI, PIN_SPI_MISO, PIN_SPI_SCK);
+SPIClass BTLE_SPI(PIN_BLE_SPI_MOSI, PIN_BLE_SPI_MISO, PIN_BLE_SPI_SCK);
 
 // Configure BTLE pins
-SPBTLERFClass BTLE(&BTLE_SPI, PIN_SPI_nCS, PIN_SPI_IRQ, PIN_SPI_RESET, PIN_BLE_LED);
+SPBTLERFClass BTLE(&BTLE_SPI, PIN_BLE_SPI_nCS, PIN_BLE_SPI_IRQ, PIN_BLE_SPI_RESET, PIN_BLE_LED);
 
 const char *name = "BlueNRG";
 uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
