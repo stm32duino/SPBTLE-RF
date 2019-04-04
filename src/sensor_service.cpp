@@ -126,6 +126,11 @@ tBleStatus SensorServiceClass::begin(const char *name, uint8_t addr[BDADDR_SIZE]
 
   uint8_t  hwVersion;
   uint16_t fwVersion;
+  
+  memset(dev_name, 0, sizeof(dev_name));
+  
+  dev_name[0] =AD_TYPE_COMPLETE_LOCAL_NAME;
+  strncpy(&dev_name[1], name, (strlen(name)<7) ? strlen(name) : 7);
 
   int ret;
 
@@ -190,7 +195,7 @@ tBleStatus SensorServiceClass::begin(const char *name, uint8_t addr[BDADDR_SIZE]
   }
 
   ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
-                                   strlen(name), (uint8_t *)name);
+                                   (strlen(name)<7) ? strlen(name) : 7, (uint8_t *)name);
 
   if(ret){
     PRINTF("aci_gatt_update_char_value failed.\n");
@@ -523,15 +528,13 @@ void SensorServiceClass::setConnectable(void)
 {
   tBleStatus ret;
 
-  const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
-
   if(set_connectable){
     /* disable scan response */
     hci_le_set_scan_resp_data(0,NULL);
     PRINTF("General Discoverable Mode.\n");
 
     ret = aci_gap_set_discoverable(ADV_IND, 0, 0, PUBLIC_ADDR, NO_WHITE_LIST_USE,
-                                   sizeof(local_name), local_name, 0, NULL, 0, 0);
+                                   strlen(dev_name), dev_name, 0, NULL, 0, 0);
     if (ret != BLE_STATUS_SUCCESS) {
       PRINTF("Error while setting discoverable mode (%d)\n", ret);
     }

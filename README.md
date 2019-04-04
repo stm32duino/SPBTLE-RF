@@ -30,6 +30,9 @@ Three services are started : Acc, Environnemental and Time.
 For testing the sketch, you can download on the playstore the "BLueNRG" application provided by STMicroelectronics.
 Launch the application and enable Bluetooth on your smartphone. Connect it to the BLueNRG device. You will see all the services,
 you can click on each one and read the data.
+Pay attention that the device name can't be more than 7 characters long. If the string passed to the begin function is longer, it is 
+automatically trimmed to the first 7 characters.
+The BlueNRG app expects "BlueNRG" as device name, using anything else will make the device not connectable.
 
 
 The SPBTLE-RF uses SPI. You need to configure the pin used for spi link.

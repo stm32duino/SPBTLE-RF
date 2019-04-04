@@ -149,6 +149,7 @@ class SensorServiceClass
     volatile uint32_t    press_data;
     volatile uint16_t   hum_data;
 
+    char dev_name[8];
     bool ledState = false;
     uint32_t previousMinuteValue = 0;
 };
