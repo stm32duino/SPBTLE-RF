@@ -74,7 +74,8 @@
  * @{
  */
 /* Exported defines ----------------------------------------------------------*/
-
+// Default Name
+#define DEFAULT_DEVICE_NAME 'B','l','u','e','N','R','G'
 /**
  * @}
  */
@@ -149,7 +150,8 @@ class SensorServiceClass
     volatile uint32_t    press_data;
     volatile uint16_t   hum_data;
 
-    char dev_name[8];
+    char dev_name[8] =  {AD_TYPE_COMPLETE_LOCAL_NAME, DEFAULT_DEVICE_NAME};
+    uint8_t dev_nameLen;
     bool ledState = false;
     uint32_t previousMinuteValue = 0;
 };
