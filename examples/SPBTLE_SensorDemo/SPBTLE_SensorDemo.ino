@@ -17,6 +17,11 @@
  Environnemental values (Temperature, humidity and pressure) are updated each seconds.
  Each minute a notification is sent to the user and seconds can be read.
 
+ Pay attention that the device name can't be more than 7 characters long. If the string 
+ passed to the begin function is longer, it is automatically trimmed to the first 7 characters.
+ The BlueNRG app expects "BlueNRG" as device name, using anything else will make the device 
+ not connectable.
+
  */
 
 #include <SPI.h>
@@ -39,7 +44,7 @@ SPIClass BTLE_SPI(PIN_BLE_SPI_MOSI, PIN_BLE_SPI_MISO, PIN_BLE_SPI_SCK);
 // Configure BTLE pins
 SPBTLERFClass BTLE(&BTLE_SPI, PIN_BLE_SPI_nCS, PIN_BLE_SPI_IRQ, PIN_BLE_SPI_RESET, PIN_BLE_LED);
 
-const char *name = "BlueNRG";
+const char *name = "BlueNRG"; //Should be at most 7 characters
 uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
 
 AxesRaw_t axes_data;
